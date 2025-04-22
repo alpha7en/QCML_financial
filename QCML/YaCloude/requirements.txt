@@ -1,0 +1,7 @@
+# requirements.txt
+torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pandas
+numpy
+scikit-learn
+matplotlib
+# Добавьте другие зависимости, если они есть

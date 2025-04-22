@@ -1,0 +1,380 @@
+2025-04-21 01:08:31,984 - INFO - [<module>:163] - Запуск скрипта слияния и расчета v10 (отладка Z-score extreme)...
+2025-04-21 01:08:31,984 - INFO - [load_and_prepare_data:119] - [load_and_prepare_data] Загрузка src1 из raw_features.csv...
+2025-04-21 01:08:31,999 - INFO - [load_and_prepare_data:122] - [load_and_prepare_data] Загружен файл raw_features.csv, строк: 1431
+2025-04-21 01:08:32,005 - INFO - [load_and_prepare_data:136] - [load_and_prepare_data] Парсинг 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-21 01:08:32,077 - INFO - [load_and_prepare_data:138] - [load_and_prepare_data] Колонка 'news_topic_intensities_1d_raw' распарсена.
+2025-04-21 01:08:32,077 - WARNING - [load_and_prepare_data:151] - [load_and_prepare_data] В raw_features.csv (src1) отсутствуют колонки: ['news_sentiment_chg_1d_raw', 'news_topic_focus_shift_1d_raw'].
+2025-04-21 01:08:32,080 - INFO - [load_and_prepare_data:156] - [load_and_prepare_data] Подготовка src1 завершена.
+2025-04-21 01:08:32,081 - INFO - [load_and_prepare_data:119] - [load_and_prepare_data] Загрузка src2 из gemini_daily_headline_features_structured_v2 (1).csv...
+2025-04-21 01:08:32,093 - INFO - [load_and_prepare_data:122] - [load_and_prepare_data] Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-21 01:08:32,098 - WARNING - [load_and_prepare_data:151] - [load_and_prepare_data] В gemini_daily_headline_features_structured_v2 (1).csv (src2) отсутствуют колонки: ['news_sentiment_extreme_1d_raw'].
+2025-04-21 01:08:32,101 - INFO - [load_and_prepare_data:156] - [load_and_prepare_data] Подготовка src2 завершена.
+2025-04-21 01:08:32,102 - INFO - [<module>:171] - Слияние данных по дате...
+2025-04-21 01:08:32,106 - INFO - [<module>:175] - Слияние завершено. Строк: 1828.
+2025-04-21 01:08:32,106 - INFO - [<module>:178] - Создание комбинированных сырых признаков...
+2025-04-21 01:08:32,122 - INFO - [<module>:208] - Комбинированные сырые признаки созданы. Проверка NaN (особое внимание к EXTREME):
+2025-04-21 01:08:32,123 - INFO - [<module>:214] -   - combined_sentiment_1d_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,123 - INFO - [<module>:214] -   - combined_sentiment_chg_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,124 - INFO - [<module>:214] -   - combined_sentiment_extreme_1d_raw: NaN = 397/1828 (21.7%)
+2025-04-21 01:08:32,128 - INFO - [<module>:217] -     -> Статистика для combined_sentiment_extreme_1d_raw:
+count    1431.000000
+mean        0.702066
+std         0.346315
+min         0.000000
+25%         0.500000
+50%         0.750000
+75%         1.000000
+max         1.000000
+2025-04-21 01:08:32,129 - INFO - [<module>:218] -     -> Уникальные значения (top 10):
+combined_sentiment_extreme_1d_raw
+1.000000    678
+0.500000    203
+0.000000    180
+0.666667    143
+0.750000     71
+0.333333     51
+0.600000     31
+0.800000     20
+0.250000     15
+0.833333      9
+2025-04-21 01:08:32,129 - INFO - [<module>:214] -   - combined_topic_focus_shift_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,130 - INFO - [<module>:214] -   - combined_topic_entropy_1d_raw: NaN = 3/1828 (0.2%)
+2025-04-21 01:08:32,130 - INFO - [<module>:214] -   - combined_news_topic_intensity_MacroRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,130 - INFO - [<module>:214] -   - combined_news_topic_intensity_MonetaryPolicyRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,131 - INFO - [<module>:214] -   - combined_news_topic_intensity_GeopoliticsSanctions_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,131 - INFO - [<module>:214] -   - combined_news_topic_intensity_OilGasEnergy_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,131 - INFO - [<module>:214] -   - combined_news_topic_intensity_FiscalPolicyCorp_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,131 - INFO - [<module>:222] - Начало расчета финальных 12 признаков...
+2025-04-21 01:08:32,132 - INFO - [<module>:251] - --- Расчет признаков Z21 ---
+2025-04-21 01:08:32,132 - INFO - [calculate_and_log:241] -   Расчет: news_sentiment_accel_1d_z21 из 'sentiment_accel'
+2025-04-21 01:08:32,132 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'sentiment_accel' [Win=21, MinP=15]
+2025-04-21 01:08:32,136 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'sentiment_accel':
+count    1.811000e+03
+mean    -8.620801e-04
+std      1.091548e-02
+min     -1.042105e-01
+25%     -5.392857e-03
+50%     -2.048626e-17
+75%      4.761905e-03
+max      5.476190e-02
+2025-04-21 01:08:32,138 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'sentiment_accel':
+count    1811.000000
+mean        0.206171
+std         0.102231
+min         0.057200
+25%         0.137292
+50%         0.177789
+75%         0.244161
+max         0.664195
+2025-04-21 01:08:32,139 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 17
+2025-04-21 01:08:32,139 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 17
+2025-04-21 01:08:32,139 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,141 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'sentiment_accel': NaN=20/1828
+2025-04-21 01:08:32,142 - INFO - [calculate_and_log:247] -     -> Результат для news_sentiment_accel_1d_z21: NaN=20/1828
+2025-04-21 01:08:32,142 - INFO - [calculate_and_log:241] -   Расчет: news_topic_entropy_daily_z21 из 'combined_topic_entropy_1d_raw'
+2025-04-21 01:08:32,143 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_topic_entropy_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,146 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_topic_entropy_1d_raw':
+count    1814.000000
+mean        1.653192
+std         0.101071
+min         1.337087
+25%         1.581106
+50%         1.653769
+75%         1.727245
+max         1.899765
+2025-04-21 01:08:32,153 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_topic_entropy_1d_raw':
+count    1814.000000
+mean        0.389943
+std         0.061977
+min         0.185655
+25%         0.349820
+50%         0.391756
+75%         0.424494
+max         0.590080
+2025-04-21 01:08:32,153 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 14
+2025-04-21 01:08:32,154 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 14
+2025-04-21 01:08:32,154 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,156 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_topic_entropy_1d_raw': NaN=3/1828
+2025-04-21 01:08:32,157 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_entropy_daily_z21: NaN=3/1828
+2025-04-21 01:08:32,157 - INFO - [calculate_and_log:241] -   Расчет: news_sentiment_extreme_1d_z21 из 'combined_sentiment_extreme_1d_raw'
+2025-04-21 01:08:32,157 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_sentiment_extreme_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,161 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_sentiment_extreme_1d_raw':
+count    1466.000000
+mean        0.698326
+std         0.084939
+min         0.416667
+25%         0.638012
+50%         0.700980
+75%         0.755556
+max         0.951042
+2025-04-21 01:08:32,164 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_sentiment_extreme_1d_raw':
+count    1466.000000
+mean        0.343134
+std         0.061459
+min         0.108093
+25%         0.310365
+50%         0.347822
+75%         0.384183
+max         0.492592
+2025-04-21 01:08:32,164 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 362
+2025-04-21 01:08:32,165 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 362
+2025-04-21 01:08:32,165 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,166 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_sentiment_extreme_1d_raw': NaN=397/1828
+2025-04-21 01:08:32,167 - DEBUG - [calculate_rolling_zscore:104] - Примеры индексов с NaN в Z-score для 'combined_sentiment_extreme_1d_raw' (до 10): [Timestamp('2020-05-20 00:00:00'), Timestamp('2020-05-23 00:00:00'), Timestamp('2020-05-30 00:00:00'), Timestamp('2020-06-06 00:00:00'), Timestamp('2020-06-26 00:00:00'), Timestamp('2020-07-01 00:00:00'), Timestamp('2020-07-08 00:00:00'), Timestamp('2020-07-11 00:00:00'), Timestamp('2020-07-12 00:00:00'), Timestamp('2020-07-31 00:00:00')]
+2025-04-21 01:08:32,176 - DEBUG - [calculate_rolling_zscore:112] - Данные для первых 10 NaN Z-score:
+            input  roll_mean  roll_std  z_calc
+date                                          
+2020-05-20    NaN   0.770238  0.290752     NaN
+2020-05-23    NaN   0.731830  0.315842     NaN
+2020-05-30    NaN   0.746605  0.313756     NaN
+2020-06-06    NaN   0.741503  0.340395     NaN
+2020-06-26    NaN   0.742544  0.324071     NaN
+2020-07-01    NaN   0.819737  0.299501     NaN
+2020-07-08    NaN   0.734722  0.285720     NaN
+2020-07-11    NaN   0.775980  0.252795     NaN
+2020-07-12    NaN   0.777604  0.260994     NaN
+2020-07-31    NaN   0.684259  0.332964     NaN
+2025-04-21 01:08:32,176 - INFO - [calculate_and_log:247] -     -> Результат для news_sentiment_extreme_1d_z21: NaN=397/1828
+2025-04-21 01:08:32,177 - INFO - [calculate_and_log:241] -   Расчет: news_topic_shock_1d_z21 из 'combined_topic_focus_shift_1d_raw'
+2025-04-21 01:08:32,177 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_topic_focus_shift_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,180 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_topic_focus_shift_1d_raw':
+count    1812.000000
+mean        0.085707
+std         0.039090
+min         0.025355
+25%         0.057055
+50%         0.076960
+75%         0.104325
+max         0.221531
+2025-04-21 01:08:32,183 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_topic_focus_shift_1d_raw':
+count    1812.000000
+mean        0.082046
+std         0.047756
+min         0.015127
+25%         0.045646
+50%         0.067471
+75%         0.106790
+max         0.241674
+2025-04-21 01:08:32,183 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 16
+2025-04-21 01:08:32,183 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 16
+2025-04-21 01:08:32,183 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,185 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_topic_focus_shift_1d_raw': NaN=14/1828
+2025-04-21 01:08:32,186 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_shock_1d_z21: NaN=14/1828
+2025-04-21 01:08:32,186 - INFO - [calculate_and_log:241] -   Расчет: news_topic_intensity_MacroRF_1d_z21 из 'combined_news_topic_intensity_MacroRF_raw'
+2025-04-21 01:08:32,186 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_news_topic_intensity_MacroRF_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,190 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_news_topic_intensity_MacroRF_raw':
+count    1814.000000
+mean        0.224169
+std         0.050057
+min         0.122788
+25%         0.188457
+50%         0.216038
+75%         0.253831
+max         0.373694
+2025-04-21 01:08:32,192 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_news_topic_intensity_MacroRF_raw':
+count    1814.000000
+mean        0.134094
+std         0.030942
+min         0.059135
+25%         0.113352
+50%         0.131986
+75%         0.155956
+max         0.225303
+2025-04-21 01:08:32,192 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 14
+2025-04-21 01:08:32,193 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 14
+2025-04-21 01:08:32,193 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,196 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_news_topic_intensity_MacroRF_raw': NaN=0/1828
+2025-04-21 01:08:32,197 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_intensity_MacroRF_1d_z21: NaN=0/1828
+2025-04-21 01:08:32,197 - INFO - [calculate_and_log:241] -   Расчет: news_topic_intensity_MonPolicy_1d_z21 из 'combined_news_topic_intensity_MonetaryPolicyRF_raw'
+2025-04-21 01:08:32,197 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_news_topic_intensity_MonetaryPolicyRF_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,202 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_news_topic_intensity_MonetaryPolicyRF_raw':
+count    1814.000000
+mean        0.078587
+std         0.025710
+min         0.020911
+25%         0.058543
+50%         0.081702
+75%         0.095509
+max         0.159331
+2025-04-21 01:08:32,206 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_news_topic_intensity_MonetaryPolicyRF_raw':
+count    1814.000000
+mean        0.071328
+std         0.032403
+min         0.019521
+25%         0.045871
+50%         0.062516
+75%         0.095636
+max         0.171569
+2025-04-21 01:08:32,206 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 14
+2025-04-21 01:08:32,207 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 14
+2025-04-21 01:08:32,207 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,211 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_news_topic_intensity_MonetaryPolicyRF_raw': NaN=0/1828
+2025-04-21 01:08:32,212 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_intensity_MonPolicy_1d_z21: NaN=0/1828
+2025-04-21 01:08:32,212 - INFO - [calculate_and_log:241] -   Расчет: news_topic_intensity_Geopol_1d_z21 из 'combined_news_topic_intensity_GeopoliticsSanctions_raw'
+2025-04-21 01:08:32,212 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'combined_news_topic_intensity_GeopoliticsSanctions_raw' [Win=21, MinP=15]
+2025-04-21 01:08:32,216 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'combined_news_topic_intensity_GeopoliticsSanctions_raw':
+count    1814.000000
+mean        0.205367
+std         0.060724
+min         0.109113
+25%         0.161567
+50%         0.192769
+75%         0.240931
+max         0.506510
+2025-04-21 01:08:32,219 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'combined_news_topic_intensity_GeopoliticsSanctions_raw':
+count    1814.000000
+mean        0.138184
+std         0.032239
+min         0.055794
+25%         0.117283
+50%         0.137495
+75%         0.158031
+max         0.234247
+2025-04-21 01:08:32,220 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 14
+2025-04-21 01:08:32,220 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 14
+2025-04-21 01:08:32,220 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,224 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'combined_news_topic_intensity_GeopoliticsSanctions_raw': NaN=0/1828
+2025-04-21 01:08:32,225 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_intensity_Geopol_1d_z21: NaN=0/1828
+2025-04-21 01:08:32,225 - INFO - [<module>:262] - --- Расчет признаков Z63 ---
+2025-04-21 01:08:32,226 - INFO - [calculate_and_log:241] -   Расчет: news_sentiment_level_21d_z63 из 'sentiment_level_21d'
+2025-04-21 01:08:32,226 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'sentiment_level_21d' [Win=63, MinP=47]
+2025-04-21 01:08:32,229 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'sentiment_level_21d':
+count    1768.000000
+mean       -0.019511
+std         0.060565
+min        -0.290394
+25%        -0.039567
+50%        -0.015961
+75%         0.012279
+max         0.103867
+2025-04-21 01:08:32,233 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'sentiment_level_21d':
+count    1768.000000
+mean        0.059773
+std         0.024262
+min         0.023517
+25%         0.043339
+50%         0.051994
+75%         0.070542
+max         0.160362
+2025-04-21 01:08:32,233 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 60
+2025-04-21 01:08:32,234 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 60
+2025-04-21 01:08:32,234 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,237 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'sentiment_level_21d': NaN=14/1828
+2025-04-21 01:08:32,239 - INFO - [calculate_and_log:247] -     -> Результат для news_sentiment_level_21d_z63: NaN=14/1828
+2025-04-21 01:08:32,240 - INFO - [calculate_and_log:241] -   Расчет: news_topic_entropy_level_21d_z63 из 'entropy_level_21d'
+2025-04-21 01:08:32,240 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'entropy_level_21d' [Win=63, MinP=47]
+2025-04-21 01:08:32,246 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'entropy_level_21d':
+count    1768.000000
+mean        1.651766
+std         0.067353
+min         1.485664
+25%         1.604973
+50%         1.662092
+75%         1.698208
+max         1.796347
+2025-04-21 01:08:32,250 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'entropy_level_21d':
+count    1768.000000
+mean        0.072267
+std         0.023835
+min         0.031404
+25%         0.056371
+50%         0.068322
+75%         0.083999
+max         0.151454
+2025-04-21 01:08:32,251 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 60
+2025-04-21 01:08:32,251 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 60
+2025-04-21 01:08:32,251 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,254 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'entropy_level_21d': NaN=14/1828
+2025-04-21 01:08:32,256 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_entropy_level_21d_z63: NaN=14/1828
+2025-04-21 01:08:32,257 - INFO - [calculate_and_log:241] -   Расчет: news_topic_intensity_OilGas_21d_z63 из 'intensity_OilGas_level_21d'
+2025-04-21 01:08:32,257 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'intensity_OilGas_level_21d' [Win=63, MinP=47]
+2025-04-21 01:08:32,262 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'intensity_OilGas_level_21d':
+count    1768.000000
+mean        0.203334
+std         0.057775
+min         0.098920
+25%         0.157493
+50%         0.201802
+75%         0.247573
+max         0.323755
+2025-04-21 01:08:32,265 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'intensity_OilGas_level_21d':
+count    1768.000000
+mean        0.031679
+std         0.013259
+min         0.009077
+25%         0.022371
+50%         0.029947
+75%         0.040162
+max         0.069202
+2025-04-21 01:08:32,265 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 60
+2025-04-21 01:08:32,266 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 60
+2025-04-21 01:08:32,266 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,269 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'intensity_OilGas_level_21d': NaN=14/1828
+2025-04-21 01:08:32,270 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_intensity_OilGas_21d_z63: NaN=14/1828
+2025-04-21 01:08:32,271 - INFO - [calculate_and_log:241] -   Расчет: news_topic_intensity_Fiscal_21d_z63 из 'intensity_Fiscal_level_21d'
+2025-04-21 01:08:32,271 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'intensity_Fiscal_level_21d' [Win=63, MinP=47]
+2025-04-21 01:08:32,275 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'intensity_Fiscal_level_21d':
+count    1768.000000
+mean        0.288267
+std         0.035997
+min         0.224034
+25%         0.257653
+50%         0.285780
+75%         0.320039
+max         0.361850
+2025-04-21 01:08:32,278 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'intensity_Fiscal_level_21d':
+count    1768.000000
+mean        0.034580
+std         0.010540
+min         0.012464
+25%         0.026441
+50%         0.034222
+75%         0.042110
+max         0.065073
+2025-04-21 01:08:32,278 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 60
+2025-04-21 01:08:32,278 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 60
+2025-04-21 01:08:32,279 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,281 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'intensity_Fiscal_level_21d': NaN=14/1828
+2025-04-21 01:08:32,281 - INFO - [calculate_and_log:247] -     -> Результат для news_topic_intensity_Fiscal_21d_z63: NaN=14/1828
+2025-04-21 01:08:32,281 - INFO - [<module>:274] - --- Расчет признаков Z1Y ---
+2025-04-21 01:08:32,282 - INFO - [calculate_and_log:241] -   Расчет: news_sentiment_level_63d_z1y из 'sentiment_level_63d'
+2025-04-21 01:08:32,282 - DEBUG - [calculate_rolling_zscore:74] - Запуск для 'sentiment_level_63d' [Win=252, MinP=189]
+2025-04-21 01:08:32,285 - DEBUG - [calculate_rolling_zscore:85] - Статистика rolling_mean для 'sentiment_level_63d':
+count    1594.000000
+mean       -0.018613
+std         0.037518
+min        -0.116230
+25%        -0.030394
+50%        -0.006919
+75%         0.004410
+max         0.029036
+2025-04-21 01:08:32,288 - DEBUG - [calculate_rolling_zscore:86] - Статистика rolling_std для 'sentiment_level_63d':
+count    1594.000000
+mean        0.046765
+std         0.024675
+min         0.022036
+25%         0.031018
+50%         0.037836
+75%         0.048288
+max         0.114477
+2025-04-21 01:08:32,289 - DEBUG - [calculate_rolling_zscore:87] - Количество NaN в rolling_mean: 234
+2025-04-21 01:08:32,289 - DEBUG - [calculate_rolling_zscore:88] - Количество NaN в rolling_std: 234
+2025-04-21 01:08:32,289 - DEBUG - [calculate_rolling_zscore:89] - Количество std == 0: 0
+2025-04-21 01:08:32,291 - DEBUG - [calculate_rolling_zscore:99] - Итоговый Z-score для 'sentiment_level_63d': NaN=46/1828
+2025-04-21 01:08:32,292 - INFO - [calculate_and_log:247] -     -> Результат для news_sentiment_level_63d_z1y: NaN=46/1828
+2025-04-21 01:08:32,292 - INFO - [<module>:278] - Расчет финальных признаков завершен. Проверка NaN в результатах:
+2025-04-21 01:08:32,293 - INFO - [<module>:281] -   - news_sentiment_accel_1d_z21: NaN = 20/1828 (1.1%)
+2025-04-21 01:08:32,293 - INFO - [<module>:281] -   - news_topic_entropy_daily_z21: NaN = 3/1828 (0.2%)
+2025-04-21 01:08:32,294 - INFO - [<module>:281] -   - news_sentiment_extreme_1d_z21: NaN = 397/1828 (21.7%)
+2025-04-21 01:08:32,294 - INFO - [<module>:281] -   - news_topic_shock_1d_z21: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,294 - INFO - [<module>:281] -   - news_topic_intensity_MacroRF_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,295 - INFO - [<module>:281] -   - news_topic_intensity_MonPolicy_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,295 - INFO - [<module>:281] -   - news_topic_intensity_Geopol_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:08:32,296 - INFO - [<module>:281] -   - news_sentiment_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,296 - INFO - [<module>:281] -   - news_topic_entropy_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,297 - INFO - [<module>:281] -   - news_topic_intensity_OilGas_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,297 - INFO - [<module>:281] -   - news_topic_intensity_Fiscal_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:08:32,297 - INFO - [<module>:281] -   - news_sentiment_level_63d_z1y: NaN = 46/1828 (2.5%)
+2025-04-21 01:08:32,300 - INFO - [<module>:292] - Сохранение итогового файла (1828 строк) в final_qcml_nlp_features_v10_extreme_z_debug.csv...
+2025-04-21 01:08:32,358 - INFO - [<module>:297] - Файл с финальными 12 признаками успешно сохранен.
+2025-04-21 01:08:32,358 - INFO - [<module>:300] - Скрипт завершил выполнение.

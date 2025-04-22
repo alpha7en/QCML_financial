@@ -1,0 +1,129 @@
+2025-04-21 00:38:37,507 - INFO - [<module>] - Запуск скрипта слияния и расчета финальных признаков v5 (с отладкой)...
+2025-04-21 00:38:37,507 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Загрузка src1 из raw_features.csv...
+2025-04-21 00:38:37,523 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Загружен файл raw_features.csv, строк: 1431
+2025-04-21 00:38:37,530 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Парсинг 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-21 00:38:37,621 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Колонка 'news_topic_intensities_1d_raw' распарсена.
+2025-04-21 00:38:37,622 - WARNING - [load_and_prepare_data] - [load_and_prepare_data] В raw_features.csv (src1) отсутствуют колонки: ['news_sentiment_extreme_rate_1d_raw', 'news_topic_focus_shift_1d_raw', 'news_sentiment_chg_1d_raw'].
+2025-04-21 00:38:37,630 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Подготовка src1 завершена. Колонки: ['date', 'news_sentiment_1d_raw_src1', 'news_topic_entropy_1d_raw_src1', 'news_sentiment_extreme_1d_raw_src1', 'news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src1']
+2025-04-21 00:38:37,652 - DEBUG - [load_and_prepare_data] - [load_and_prepare_data] src1 head:
+        date  ...  news_topic_intensity_FiscalPolicyCorp_raw_src1
+0 2020-04-17  ...                                        0.710561
+1 2020-04-18  ...                                        0.662764
+2 2020-04-19  ...                                        0.205331
+3 2020-04-20  ...                                        0.470719
+4 2020-04-21  ...                                        0.033780
+
+[5 rows x 9 columns]
+2025-04-21 00:38:37,691 - DEBUG - [load_and_prepare_data] - [load_and_prepare_data] src1 describe:
+                                date  ...  news_topic_intensity_FiscalPolicyCorp_raw_src1
+count                           1431  ...                                    1.431000e+03
+mean   2022-09-27 05:53:12.452830208  ...                                    3.307341e-01
+min              2020-04-17 00:00:00  ...                                    1.531944e-08
+25%              2021-07-06 12:00:00  ...                                    6.658013e-03
+50%              2022-09-16 00:00:00  ...                                    2.727515e-01
+75%              2023-12-16 00:00:00  ...                                    5.100365e-01
+max              2025-04-16 00:00:00  ...                                    9.999420e-01
+std                              NaN  ...                                    3.228759e-01
+
+[8 rows x 9 columns]
+2025-04-21 00:38:37,692 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Загрузка src2 из gemini_daily_headline_features_structured_v2 (1).csv...
+2025-04-21 00:38:37,704 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-21 00:38:37,709 - WARNING - [load_and_prepare_data] - [load_and_prepare_data] В gemini_daily_headline_features_structured_v2 (1).csv (src2) отсутствуют колонки: ['news_sentiment_extreme_rate_1d_raw'].
+2025-04-21 00:38:37,718 - INFO - [load_and_prepare_data] - [load_and_prepare_data] Подготовка src2 завершена. Колонки: ['date', 'news_sentiment_1d_raw_src2', 'news_sentiment_chg_1d_raw_src2', 'news_topic_intensity_MacroRF_raw_src2', 'news_topic_intensity_MonetaryPolicyRF_raw_src2', 'news_topic_intensity_GeopoliticsSanctions_raw_src2', 'news_topic_intensity_OilGasEnergy_raw_src2', 'news_topic_intensity_FiscalPolicyCorp_raw_src2', 'news_topic_focus_shift_1d_raw_src2', 'news_topic_entropy_1d_raw_src2', '_topic_vector_internal_src2']
+2025-04-21 00:38:37,746 - DEBUG - [load_and_prepare_data] - [load_and_prepare_data] src2 head:
+        date  ...                        _topic_vector_internal_src2
+0 2020-04-18  ...  [np.float64(0.2), np.float64(0.0), np.float64(...
+1 2020-04-19  ...  [np.float64(0.4), np.float64(0.0), np.float64(...
+2 2020-04-20  ...  [np.float64(0.09), np.float64(0.02), np.float6...
+3 2020-04-21  ...  [np.float64(0.35), np.float64(0.12), np.float6...
+4 2020-04-22  ...  [np.float64(0.1), np.float64(0.07), np.float64...
+
+[5 rows x 11 columns]
+2025-04-21 00:38:37,793 - DEBUG - [load_and_prepare_data] - [load_and_prepare_data] src2 describe:
+                                date  ...  news_topic_entropy_1d_raw_src2
+count                           1826  ...                     1812.000000
+mean   2022-10-18 10:59:16.626505728  ...                        2.106521
+min              2020-04-18 00:00:00  ...                        0.000000
+25%              2021-07-19 06:00:00  ...                        2.066580
+50%              2022-10-18 12:00:00  ...                        2.190015
+75%              2024-01-17 18:00:00  ...                        2.251630
+max              2025-04-18 00:00:00  ...                        2.321930
+std                              NaN  ...                        0.258734
+
+[8 rows x 10 columns]
+2025-04-21 00:38:37,793 - INFO - [<module>] - Слияние данных по дате...
+2025-04-21 00:38:37,798 - INFO - [<module>] - Слияние завершено. Строк: 1828. Даты: 2020-04-17 00:00:00 - 2025-04-18 00:00:00
+2025-04-21 00:38:37,798 - DEBUG - [<module>] - Колонки после слияния: ['news_sentiment_1d_raw_src1', 'news_topic_entropy_1d_raw_src1', 'news_sentiment_extreme_1d_raw_src1', 'news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src1', 'news_sentiment_1d_raw_src2', 'news_sentiment_chg_1d_raw_src2', 'news_topic_intensity_MacroRF_raw_src2', 'news_topic_intensity_MonetaryPolicyRF_raw_src2', 'news_topic_intensity_GeopoliticsSanctions_raw_src2', 'news_topic_intensity_OilGasEnergy_raw_src2', 'news_topic_intensity_FiscalPolicyCorp_raw_src2', 'news_topic_focus_shift_1d_raw_src2', 'news_topic_entropy_1d_raw_src2', '_topic_vector_internal_src2']
+2025-04-21 00:38:37,798 - INFO - [<module>] - Создание комбинированных сырых признаков...
+2025-04-21 00:38:37,801 - DEBUG - [combine_cols] - [combine_cols] combined_sentiment_1d_raw: усреднены ['news_sentiment_1d_raw_src1', 'news_sentiment_1d_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,802 - DEBUG - [combine_cols] - [combine_cols] combined_sentiment_chg_1d_raw: используется только news_sentiment_chg_1d_raw_src2.
+2025-04-21 00:38:37,803 - WARNING - [combine_cols] - [combine_cols] Колонки news_sentiment_extreme_rate_1d_raw_src1, news_sentiment_extreme_rate_1d_raw_src2 не найдены.
+2025-04-21 00:38:37,803 - DEBUG - [combine_cols] - [combine_cols] combined_topic_focus_shift_1d_raw: используется только news_topic_focus_shift_1d_raw_src2.
+2025-04-21 00:38:37,806 - DEBUG - [combine_cols] - [combine_cols] combined_topic_entropy_1d_raw: усреднены ['news_topic_entropy_1d_raw_src1', 'news_topic_entropy_1d_raw_src2']. NaN до: (397,16), NaN после: 3
+2025-04-21 00:38:37,809 - DEBUG - [combine_cols] - [combine_cols] combined_topic_intensity_MacroRF_raw: усреднены ['news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MacroRF_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,811 - DEBUG - [combine_cols] - [combine_cols] combined_topic_intensity_MonetaryPolicyRF_raw: усреднены ['news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,814 - DEBUG - [combine_cols] - [combine_cols] combined_topic_intensity_GeopoliticsSanctions_raw: усреднены ['news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,817 - DEBUG - [combine_cols] - [combine_cols] combined_topic_intensity_OilGasEnergy_raw: усреднены ['news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,820 - DEBUG - [combine_cols] - [combine_cols] combined_topic_intensity_FiscalPolicyCorp_raw: усреднены ['news_topic_intensity_FiscalPolicyCorp_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src2']. NaN до: (397,9), NaN после: 0
+2025-04-21 00:38:37,820 - INFO - [<module>] - Комбинированные сырые признаки созданы. Проверка NaN:
+2025-04-21 00:38:37,821 - INFO - [<module>] -   - combined_sentiment_1d_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,821 - INFO - [<module>] -   - combined_sentiment_chg_1d_raw: NaN count = 14 / 1828
+2025-04-21 00:38:37,822 - INFO - [<module>] -   - combined_sentiment_extreme_rate_1d_raw: NaN count = 1828 / 1828
+2025-04-21 00:38:37,822 - INFO - [<module>] -   - combined_topic_focus_shift_1d_raw: NaN count = 14 / 1828
+2025-04-21 00:38:37,822 - INFO - [<module>] -   - combined_topic_entropy_1d_raw: NaN count = 3 / 1828
+2025-04-21 00:38:37,823 - INFO - [<module>] -   - combined_topic_intensity_MacroRF_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,823 - INFO - [<module>] -   - combined_topic_intensity_MonetaryPolicyRF_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,823 - INFO - [<module>] -   - combined_topic_intensity_GeopoliticsSanctions_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,824 - INFO - [<module>] -   - combined_topic_intensity_OilGasEnergy_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,824 - INFO - [<module>] -   - combined_topic_intensity_FiscalPolicyCorp_raw: NaN count = 0 / 1828
+2025-04-21 00:38:37,824 - INFO - [<module>] - Начало расчета финальных 12 признаков...
+2025-04-21 00:38:37,825 - INFO - [calculate_and_log] -   Расчет: news_sentiment_accel_1d_z21 из 'accel'
+2025-04-21 00:38:37,830 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1811 точек (std>0) для 'accel'
+2025-04-21 00:38:37,830 - DEBUG - [calculate_and_log] -     -> Результат для news_sentiment_accel_1d_z21: NaN=34/1828
+2025-04-21 00:38:37,831 - INFO - [calculate_and_log] -   Расчет: news_topic_entropy_daily_z21 из 'combined_topic_entropy_1d_raw'
+2025-04-21 00:38:37,834 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1814 точек (std>0) для 'combined_topic_entropy_1d_raw'
+2025-04-21 00:38:37,834 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_entropy_daily_z21: NaN=17/1828
+2025-04-21 00:38:37,835 - WARNING - [calculate_and_log] -   Пропуск: news_sentiment_extreme_1d_z21 (нет/пустая 'combined_sentiment_extreme_rate_1d_raw')
+2025-04-21 00:38:37,835 - INFO - [calculate_and_log] -   Расчет: news_topic_shock_1d_z21 из 'combined_topic_focus_shift_1d_raw'
+2025-04-21 00:38:37,838 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1812 точек (std>0) для 'combined_topic_focus_shift_1d_raw'
+2025-04-21 00:38:37,839 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_shock_1d_z21: NaN=28/1828
+2025-04-21 00:38:37,839 - INFO - [calculate_and_log] -   Расчет: news_topic_intensity_MacroRF_1d_z21 из 'combined_topic_intensity_MacroRF_raw'
+2025-04-21 00:38:37,842 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1814 точек (std>0) для 'combined_topic_intensity_MacroRF_raw'
+2025-04-21 00:38:37,843 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_intensity_MacroRF_1d_z21: NaN=14/1828
+2025-04-21 00:38:37,843 - INFO - [calculate_and_log] -   Расчет: news_topic_intensity_MonPolicy_1d_z21 из 'combined_topic_intensity_MonetaryPolicyRF_raw'
+2025-04-21 00:38:37,846 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1814 точек (std>0) для 'combined_topic_intensity_MonetaryPolicyRF_raw'
+2025-04-21 00:38:37,847 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_intensity_MonPolicy_1d_z21: NaN=14/1828
+2025-04-21 00:38:37,847 - INFO - [calculate_and_log] -   Расчет: news_topic_intensity_Geopol_1d_z21 из 'combined_topic_intensity_GeopoliticsSanctions_raw'
+2025-04-21 00:38:37,850 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1814 точек (std>0) для 'combined_topic_intensity_GeopoliticsSanctions_raw'
+2025-04-21 00:38:37,851 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_intensity_Geopol_1d_z21: NaN=14/1828
+2025-04-21 00:38:37,851 - INFO - [calculate_and_log] -   Расчет: news_sentiment_level_21d_z63 из 'level'
+2025-04-21 00:38:37,854 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1768 точек (std>0) для 'level'
+2025-04-21 00:38:37,855 - DEBUG - [calculate_and_log] -     -> Результат для news_sentiment_level_21d_z63: NaN=60/1828
+2025-04-21 00:38:37,856 - INFO - [calculate_and_log] -   Расчет: news_topic_entropy_level_21d_z63 из 'level'
+2025-04-21 00:38:37,859 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1768 точек (std>0) для 'level'
+2025-04-21 00:38:37,859 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_entropy_level_21d_z63: NaN=60/1828
+2025-04-21 00:38:37,860 - INFO - [calculate_and_log] -   Расчет: news_topic_intensity_OilGas_21d_z63 из 'level'
+2025-04-21 00:38:37,863 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1768 точек (std>0) для 'level'
+2025-04-21 00:38:37,864 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_intensity_OilGas_21d_z63: NaN=60/1828
+2025-04-21 00:38:37,865 - INFO - [calculate_and_log] -   Расчет: news_topic_intensity_Fiscal_21d_z63 из 'level'
+2025-04-21 00:38:37,867 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1768 точек (std>0) для 'level'
+2025-04-21 00:38:37,868 - DEBUG - [calculate_and_log] -     -> Результат для news_topic_intensity_Fiscal_21d_z63: NaN=60/1828
+2025-04-21 00:38:37,869 - INFO - [calculate_and_log] -   Расчет: news_sentiment_level_63d_z1y из 'level'
+2025-04-21 00:38:37,872 - DEBUG - [calculate_rolling_zscore] - [calculate_rolling_zscore] Z-score рассчитан для 1594 точек (std>0) для 'level'
+2025-04-21 00:38:37,872 - DEBUG - [calculate_and_log] -     -> Результат для news_sentiment_level_63d_z1y: NaN=234/1828
+2025-04-21 00:38:37,873 - INFO - [<module>] - Расчет финальных признаков завершен. Проверка NaN в результатах:
+2025-04-21 00:38:37,873 - INFO - [<module>] -   - news_sentiment_accel_1d_z21: NaN count = 34 / 1828
+2025-04-21 00:38:37,873 - INFO - [<module>] -   - news_topic_entropy_daily_z21: NaN count = 17 / 1828
+2025-04-21 00:38:37,874 - INFO - [<module>] -   - news_sentiment_extreme_1d_z21: NaN count = 1828 / 1828
+2025-04-21 00:38:37,874 - INFO - [<module>] -   - news_topic_shock_1d_z21: NaN count = 28 / 1828
+2025-04-21 00:38:37,874 - INFO - [<module>] -   - news_topic_intensity_MacroRF_1d_z21: NaN count = 14 / 1828
+2025-04-21 00:38:37,874 - INFO - [<module>] -   - news_topic_intensity_MonPolicy_1d_z21: NaN count = 14 / 1828
+2025-04-21 00:38:37,875 - INFO - [<module>] -   - news_topic_intensity_Geopol_1d_z21: NaN count = 14 / 1828
+2025-04-21 00:38:37,875 - INFO - [<module>] -   - news_sentiment_level_21d_z63: NaN count = 60 / 1828
+2025-04-21 00:38:37,875 - INFO - [<module>] -   - news_topic_entropy_level_21d_z63: NaN count = 60 / 1828
+2025-04-21 00:38:37,876 - INFO - [<module>] -   - news_topic_intensity_OilGas_21d_z63: NaN count = 60 / 1828
+2025-04-21 00:38:37,876 - INFO - [<module>] -   - news_topic_intensity_Fiscal_21d_z63: NaN count = 60 / 1828
+2025-04-21 00:38:37,876 - INFO - [<module>] -   - news_sentiment_level_63d_z1y: NaN count = 234 / 1828
+2025-04-21 00:38:37,878 - INFO - [<module>] - Сохранение итогового файла (1828 строк) в final_qcml_nlp_features_v5_debugged.csv...
+2025-04-21 00:38:37,942 - INFO - [<module>] - Файл с финальными 12 признаками успешно сохранен.
+2025-04-21 00:38:37,943 - INFO - [<module>] - Скрипт завершил выполнение.

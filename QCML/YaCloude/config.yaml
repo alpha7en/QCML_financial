@@ -1,0 +1,25 @@
+name: train-tcn-job
+desc: Train TCN model using specified data and config in DataSphere
+
+
+cmd: python3 train_tcn_job.py --data_csv ${DATA_CSV} --config_json ${CONFIG_JSON} --output_model ${OUTPUT_MODEL} --output_scaler ${OUTPUT_SCALER} --output_plot ${OUTPUT_PLOT}
+env:
+
+  python: auto
+  requirements-file: requirements.txt
+inputs:
+
+  - final_dataset.csv: DATA_CSV
+
+  - config.json: CONFIG_JSON
+
+outputs:
+
+  - tcn_model.pth: OUTPUT_MODEL
+
+  - tcn_scaler.pth: OUTPUT_SCALER
+
+  - mlp_results_plot.png: OUTPUT_PLOT
+
+cloud-instance-types:
+  - g1.1

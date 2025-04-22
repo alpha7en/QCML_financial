@@ -1,0 +1,31 @@
+2025-04-21 00:27:25,746 - INFO - Запуск скрипта слияния и расчета финальных признаков v5 (с Z-энтропией)...
+2025-04-21 00:27:25,762 - INFO - Загружен файл raw_features.csv, строк: 1431
+2025-04-21 00:27:25,769 - INFO - Парсинг 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-21 00:27:25,837 - INFO - Колонка 'news_topic_intensities_1d_raw' распарсена.
+2025-04-21 00:27:25,837 - WARNING - В raw_features.csv (src1) отсутствуют сырые колонки: ['news_topic_focus_shift_1d_raw', 'news_sentiment_chg_1d_raw', 'news_sentiment_extreme_rate_1d_raw'].
+2025-04-21 00:27:25,840 - INFO - Подготовка src1 завершена.
+2025-04-21 00:27:25,852 - INFO - Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-21 00:27:25,860 - WARNING - В gemini_daily_headline_features_structured_v2 (1).csv (src2) отсутствуют сырые колонки: ['news_sentiment_extreme_rate_1d_raw'].
+2025-04-21 00:27:25,863 - INFO - Подготовка src2 завершена.
+2025-04-21 00:27:25,863 - INFO - Слияние данных по дате...
+2025-04-21 00:27:25,869 - INFO - Слияние завершено. Итого строк: 1828
+2025-04-21 00:27:25,870 - INFO - Создание комбинированных сырых признаков...
+2025-04-21 00:27:25,879 - INFO - Комбинированные сырые признаки созданы.
+2025-04-21 00:27:25,879 - INFO - Начало расчета финальных 12 признаков...
+2025-04-21 00:27:25,881 - INFO -   Расчет: news_sentiment_accel_1d_z21 из 'accel'
+2025-04-21 00:27:25,886 - INFO -   Расчет: news_topic_entropy_daily_z21 из 'combined_topic_entropy_1d_raw'
+2025-04-21 00:27:25,888 - INFO -   -> Признак 'news_topic_entropy_daily_z21' рассчитан как Z-Score(дневной энтропии тем, W=21)
+2025-04-21 00:27:25,888 - WARNING -   Пропуск: news_sentiment_extreme_1d_z21 (нет/пустая 'combined_sentiment_extreme_rate_1d_raw')
+2025-04-21 00:27:25,889 - INFO -   Расчет: news_topic_shock_1d_z21 из 'combined_topic_focus_shift_1d_raw'
+2025-04-21 00:27:25,891 - INFO -   Расчет: news_topic_intensity_MacroRF_1d_z21 из 'combined_topic_intensity_MacroRF_raw'
+2025-04-21 00:27:25,893 - WARNING -   Пропуск: news_topic_intensity_MonPolicy_1d_z21 (нет/пустая 'combined_topic_intensity_MonetaryPolicyRF_raw')
+2025-04-21 00:27:25,894 - WARNING -   Пропуск: news_topic_intensity_Geopol_1d_z21 (нет/пустая 'combined_topic_intensity_GeopoliticsSanctions_raw')
+2025-04-21 00:27:25,895 - INFO -   Расчет: news_sentiment_level_21d_z63 из 'level'
+2025-04-21 00:27:25,897 - INFO -   Расчет: news_topic_entropy_level_21d_z63 из 'level'
+2025-04-21 00:27:25,900 - WARNING -   Пропуск: news_topic_intensity_OilGas_21d_z63 (нет/пустая 'level')
+2025-04-21 00:27:25,901 - WARNING -   Пропуск: news_topic_intensity_Fiscal_21d_z63 (нет/пустая 'level')
+2025-04-21 00:27:25,902 - INFO -   Расчет: news_sentiment_level_63d_z1y из 'level'
+2025-04-21 00:27:25,903 - INFO - Расчет финальных признаков завершен.
+2025-04-21 00:27:25,906 - INFO - Сохранение итогового файла (1828 строк) в final_qcml_nlp_features_v4_entropy_z21.csv...
+2025-04-21 00:27:25,950 - INFO - Файл с финальными 12 признаками успешно сохранен.
+2025-04-21 00:27:25,950 - INFO - Скрипт завершил выполнение.

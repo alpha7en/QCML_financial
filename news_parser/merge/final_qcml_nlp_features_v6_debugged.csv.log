@@ -1,0 +1,425 @@
+2025-04-21 01:01:20,383 - INFO - [<module>:185] - Запуск скрипта слияния и расчета v6 (максимальная отладка)...
+2025-04-21 01:01:20,383 - INFO - [load_and_prepare_data:124] - [load_and_prepare_data] Загрузка src1 из raw_features.csv...
+2025-04-21 01:01:20,399 - INFO - [load_and_prepare_data:128] - [load_and_prepare_data] Загружен файл raw_features.csv, строк: 1431
+2025-04-21 01:01:20,407 - INFO - [load_and_prepare_data:141] - [load_and_prepare_data] Парсинг 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-21 01:01:20,503 - INFO - [load_and_prepare_data:146] - [load_and_prepare_data] Колонка 'news_topic_intensities_1d_raw' распарсена.
+2025-04-21 01:01:20,507 - DEBUG - [load_and_prepare_data:153] - [load_and_prepare_data] Статистика для 'news_sentiment_extreme_1d_raw' в src1 ДО конвертации:
+count    1431.000000
+mean        0.702066
+std         0.346315
+min         0.000000
+25%         0.500000
+50%         0.750000
+75%         1.000000
+max         1.000000
+Name: news_sentiment_extreme_1d_raw, dtype: float64
+2025-04-21 01:01:20,509 - DEBUG - [load_and_prepare_data:154] - [load_and_prepare_data] Типы данных в 'news_sentiment_extreme_1d_raw':
+news_sentiment_extreme_1d_raw
+<class 'float'>    1431
+Name: count, dtype: int64
+2025-04-21 01:01:20,509 - WARNING - [load_and_prepare_data:161] - [load_and_prepare_data] В raw_features.csv (src1) отсутствуют колонки: ['news_sentiment_chg_1d_raw', 'news_topic_focus_shift_1d_raw'].
+2025-04-21 01:01:20,513 - DEBUG - [load_and_prepare_data:172] - [load_and_prepare_data] Статистика для 'news_sentiment_extreme_1d_raw' в src1 ПОСЛЕ конвертации:
+count    1431.000000
+mean        0.702066
+std         0.346315
+min         0.000000
+25%         0.500000
+50%         0.750000
+75%         1.000000
+max         1.000000
+Name: news_sentiment_extreme_1d_raw, dtype: float64
+2025-04-21 01:01:20,513 - DEBUG - [load_and_prepare_data:173] - [load_and_prepare_data] NaN count ПОСЛЕ: 0
+2025-04-21 01:01:20,519 - INFO - [load_and_prepare_data:177] - [load_and_prepare_data] Подготовка src1 завершена. Колонки: ['date', 'news_sentiment_1d_raw_src1', 'news_topic_entropy_1d_raw_src1', 'news_sentiment_extreme_1d_raw_src1', 'news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src1']
+2025-04-21 01:01:20,537 - DEBUG - [load_and_prepare_data:178] - [load_and_prepare_data] src1 head:
+        date  ...  news_topic_intensity_FiscalPolicyCorp_raw_src1
+0 2020-04-17  ...                                        0.710561
+1 2020-04-18  ...                                        0.662764
+2 2020-04-19  ...                                        0.205331
+3 2020-04-20  ...                                        0.470719
+4 2020-04-21  ...                                        0.033780
+
+[5 rows x 9 columns]
+2025-04-21 01:01:20,538 - INFO - [load_and_prepare_data:124] - [load_and_prepare_data] Загрузка src2 из gemini_daily_headline_features_structured_v2 (1).csv...
+2025-04-21 01:01:20,552 - INFO - [load_and_prepare_data:128] - [load_and_prepare_data] Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-21 01:01:20,557 - WARNING - [load_and_prepare_data:161] - [load_and_prepare_data] В gemini_daily_headline_features_structured_v2 (1).csv (src2) отсутствуют колонки: ['news_sentiment_extreme_1d_raw'].
+2025-04-21 01:01:20,563 - INFO - [load_and_prepare_data:177] - [load_and_prepare_data] Подготовка src2 завершена. Колонки: ['date', 'news_sentiment_1d_raw_src2', 'news_sentiment_chg_1d_raw_src2', 'news_topic_intensity_MacroRF_raw_src2', 'news_topic_intensity_MonetaryPolicyRF_raw_src2', 'news_topic_intensity_GeopoliticsSanctions_raw_src2', 'news_topic_intensity_OilGasEnergy_raw_src2', 'news_topic_intensity_FiscalPolicyCorp_raw_src2', 'news_topic_focus_shift_1d_raw_src2', 'news_topic_entropy_1d_raw_src2', '_topic_vector_internal_src2']
+2025-04-21 01:01:20,581 - DEBUG - [load_and_prepare_data:178] - [load_and_prepare_data] src2 head:
+        date  ...                        _topic_vector_internal_src2
+0 2020-04-18  ...  [np.float64(0.2), np.float64(0.0), np.float64(...
+1 2020-04-19  ...  [np.float64(0.4), np.float64(0.0), np.float64(...
+2 2020-04-20  ...  [np.float64(0.09), np.float64(0.02), np.float6...
+3 2020-04-21  ...  [np.float64(0.35), np.float64(0.12), np.float6...
+4 2020-04-22  ...  [np.float64(0.1), np.float64(0.07), np.float64...
+
+[5 rows x 11 columns]
+2025-04-21 01:01:20,581 - INFO - [<module>:194] - Слияние данных по дате...
+2025-04-21 01:01:20,588 - INFO - [<module>:198] - Слияние завершено. Строк: 1828.
+2025-04-21 01:01:20,588 - DEBUG - [<module>:199] - Колонки после слияния: ['news_sentiment_1d_raw_src1', 'news_topic_entropy_1d_raw_src1', 'news_sentiment_extreme_1d_raw_src1', 'news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src1', 'news_sentiment_1d_raw_src2', 'news_sentiment_chg_1d_raw_src2', 'news_topic_intensity_MacroRF_raw_src2', 'news_topic_intensity_MonetaryPolicyRF_raw_src2', 'news_topic_intensity_GeopoliticsSanctions_raw_src2', 'news_topic_intensity_OilGasEnergy_raw_src2', 'news_topic_intensity_FiscalPolicyCorp_raw_src2', 'news_topic_focus_shift_1d_raw_src2', 'news_topic_entropy_1d_raw_src2', '_topic_vector_internal_src2']
+2025-04-21 01:01:20,589 - INFO - [<module>:202] - Создание комбинированных сырых признаков...
+2025-04-21 01:01:20,592 - DEBUG - [combine_cols:211] - [combine_cols] combined_sentiment_1d_raw: усреднены ['news_sentiment_1d_raw_src1', 'news_sentiment_1d_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,593 - DEBUG - [combine_cols:207] - [combine_cols] combined_sentiment_chg_1d_raw: используется только news_sentiment_chg_1d_raw_src2.
+2025-04-21 01:01:20,594 - DEBUG - [combine_cols:207] - [combine_cols] combined_sentiment_extreme_1d_raw: используется только news_sentiment_extreme_1d_raw_src1.
+2025-04-21 01:01:20,595 - DEBUG - [combine_cols:207] - [combine_cols] combined_topic_focus_shift_1d_raw: используется только news_topic_focus_shift_1d_raw_src2.
+2025-04-21 01:01:20,599 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_entropy_1d_raw: усреднены ['news_topic_entropy_1d_raw_src1', 'news_topic_entropy_1d_raw_src2']. NaN после: 3
+2025-04-21 01:01:20,602 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_intensity_MacroRF_raw: усреднены ['news_topic_intensity_MacroRF_raw_src1', 'news_topic_intensity_MacroRF_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,606 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_intensity_MonetaryPolicyRF_raw: усреднены ['news_topic_intensity_MonetaryPolicyRF_raw_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,609 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_intensity_GeopoliticsSanctions_raw: усреднены ['news_topic_intensity_GeopoliticsSanctions_raw_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,612 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_intensity_OilGasEnergy_raw: усреднены ['news_topic_intensity_OilGasEnergy_raw_src1', 'news_topic_intensity_OilGasEnergy_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,615 - DEBUG - [combine_cols:211] - [combine_cols] combined_topic_intensity_FiscalPolicyCorp_raw: усреднены ['news_topic_intensity_FiscalPolicyCorp_raw_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_src2']. NaN после: 0
+2025-04-21 01:01:20,616 - INFO - [<module>:235] - Комбинированные сырые признаки созданы. Проверка NaN:
+2025-04-21 01:01:20,617 - INFO - [<module>:240] -   - combined_sentiment_1d_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,617 - INFO - [<module>:240] -   - combined_sentiment_chg_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,618 - INFO - [<module>:240] -   - combined_sentiment_extreme_1d_raw: NaN = 397/1828 (21.7%)
+2025-04-21 01:01:20,622 - DEBUG - [<module>:243] -     -> Статистика для combined_sentiment_extreme_1d_raw:
+count    1431.000000
+mean        0.702066
+std         0.346315
+min         0.000000
+25%         0.500000
+50%         0.750000
+75%         1.000000
+max         1.000000
+Name: combined_sentiment_extreme_1d_raw, dtype: float64
+2025-04-21 01:01:20,624 - DEBUG - [<module>:244] -     -> Уникальные значения (top 10):
+combined_sentiment_extreme_1d_raw
+1.000000    678
+0.500000    203
+0.000000    180
+0.666667    143
+0.750000     71
+0.333333     51
+0.600000     31
+0.800000     20
+0.250000     15
+0.833333      9
+Name: count, dtype: int64
+2025-04-21 01:01:20,624 - INFO - [<module>:240] -   - combined_topic_focus_shift_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,624 - INFO - [<module>:240] -   - combined_topic_entropy_1d_raw: NaN = 3/1828 (0.2%)
+2025-04-21 01:01:20,625 - INFO - [<module>:240] -   - combined_topic_intensity_MacroRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,625 - INFO - [<module>:240] -   - combined_topic_intensity_MonetaryPolicyRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,625 - INFO - [<module>:240] -   - combined_topic_intensity_GeopoliticsSanctions_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,626 - INFO - [<module>:240] -   - combined_topic_intensity_OilGasEnergy_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,626 - INFO - [<module>:240] -   - combined_topic_intensity_FiscalPolicyCorp_raw: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,626 - INFO - [<module>:249] - Начало расчета финальных 12 признаков...
+2025-04-21 01:01:20,627 - INFO - [calculate_and_log:273] -   Расчет: news_sentiment_accel_1d_z21 из 'sentiment_accel'
+2025-04-21 01:01:20,627 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'sentiment_accel' [Win=21, MinP=15]
+2025-04-21 01:01:20,632 - DEBUG - [calculate_and_log:280] -     -> Результат для news_sentiment_accel_1d_z21: NaN=20/1828
+2025-04-21 01:01:20,632 - INFO - [calculate_and_log:273] -   Расчет: news_topic_entropy_daily_z21 из 'combined_topic_entropy_1d_raw'
+2025-04-21 01:01:20,632 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_topic_entropy_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,635 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_entropy_daily_z21: NaN=3/1828
+2025-04-21 01:01:20,636 - INFO - [calculate_and_log:273] -   Расчет: news_sentiment_extreme_1d_z21 из 'combined_sentiment_extreme_1d_raw'
+2025-04-21 01:01:20,636 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_sentiment_extreme_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,639 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'combined_sentiment_extreme_1d_raw':
+2025-04-21 01:01:20,644 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-03-24       NaN        NaN       NaN           NaN
+2025-03-25  1.000000        NaN       NaN      0.000000
+2025-03-26  0.000000        NaN       NaN      0.000000
+2025-03-27  1.000000        NaN       NaN      0.000000
+2025-03-28  0.666667        NaN       NaN      0.000000
+2025-03-29  1.000000   0.777778  0.365510      0.607978
+2025-03-30       NaN   0.777778  0.365510           NaN
+2025-03-31  1.000000   0.777778  0.365510      0.607978
+2025-04-01  1.000000   0.844444  0.298586      0.520975
+2025-04-02  1.000000   0.844444  0.298586      0.520975
+2025-04-03  1.000000   0.844444  0.298586      0.520975
+2025-04-04  1.000000   0.844444  0.298586      0.520975
+2025-04-05       NaN   0.844444  0.298586           NaN
+2025-04-06  0.000000   0.777778  0.365510     -2.127922
+2025-04-07       NaN        NaN       NaN           NaN
+2025-04-08  1.000000        NaN       NaN      0.000000
+2025-04-09  1.000000   0.844444  0.353366      0.440211
+2025-04-10  0.666667   0.822222  0.353366     -0.440211
+2025-04-11  0.250000   0.772222  0.378576     -1.379437
+2025-04-12       NaN   0.772222  0.378576           NaN
+2025-04-13  0.500000   0.755208  0.372017     -0.686012
+2025-04-14       NaN   0.755208  0.372017           NaN
+2025-04-15  1.000000   0.755208  0.372017      0.658011
+2025-04-16  1.000000   0.817708  0.316548      0.575874
+2025-04-17       NaN   0.805556  0.323772           NaN
+2025-04-18       NaN        NaN       NaN           NaN
+2025-04-21 01:01:20,645 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'combined_sentiment_extreme_1d_raw': NaN=397/1828
+2025-04-21 01:01:20,645 - DEBUG - [calculate_and_log:280] -     -> Результат для news_sentiment_extreme_1d_z21: NaN=397/1828
+2025-04-21 01:01:20,646 - INFO - [calculate_and_log:273] -   Расчет: news_topic_shock_1d_z21 из 'combined_topic_focus_shift_1d_raw'
+2025-04-21 01:01:20,646 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_topic_focus_shift_1d_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,649 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_shock_1d_z21: NaN=14/1828
+2025-04-21 01:01:20,650 - INFO - [calculate_and_log:273] -   Расчет: news_topic_intensity_MacroRF_1d_z21 из 'combined_topic_intensity_MacroRF_raw'
+2025-04-21 01:01:20,650 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_topic_intensity_MacroRF_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,653 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'combined_topic_intensity_MacroRF_raw':
+2025-04-21 01:01:20,657 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-03-24  0.200000   0.205844  0.097584     -0.059885
+2025-03-25  0.115516   0.203606  0.099153     -0.888422
+2025-03-26  0.169800   0.191056  0.084165     -0.252543
+2025-03-27  0.338626   0.198705  0.090015      1.554419
+2025-03-28  0.101309   0.194867  0.092452     -1.011967
+2025-03-29  0.304993   0.202248  0.094847      1.083270
+2025-03-30  0.250000   0.209391  0.092378      0.439598
+2025-03-31  0.182140   0.212338  0.090357     -0.334209
+2025-04-01  0.556245   0.235254  0.112177      2.861473
+2025-04-02  0.132397   0.226117  0.112377     -0.833978
+2025-04-03  0.265203   0.219716  0.105626      0.430639
+2025-04-04  0.085047   0.215297  0.109341     -1.191226
+2025-04-05  0.100000   0.210535  0.112181     -0.985322
+2025-04-06  0.431195   0.222313  0.121811      1.714804
+2025-04-07  0.250000   0.218742  0.119732      0.261066
+2025-04-08  0.321112   0.222697  0.121757      0.808295
+2025-04-09  0.100552   0.218914  0.124356     -0.951792
+2025-04-10  0.102348   0.218883  0.124386     -0.936883
+2025-04-11  0.378313   0.232609  0.125360      1.162277
+2025-04-12  0.150000   0.227847  0.126560     -0.615101
+2025-04-13  0.077398   0.219628  0.130590     -1.089134
+2025-04-14  0.100000   0.214866  0.133140     -0.862748
+2025-04-15  0.444263   0.230521  0.140024      1.526471
+2025-04-16  0.075898   0.226049  0.143515     -1.046236
+2025-04-17  0.200000   0.219448  0.141249     -0.137688
+2025-04-18  0.180000   0.223195  0.138983     -0.310795
+2025-04-21 01:01:20,658 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'combined_topic_intensity_MacroRF_raw': NaN=0/1828
+2025-04-21 01:01:20,658 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_intensity_MacroRF_1d_z21: NaN=0/1828
+2025-04-21 01:01:20,659 - INFO - [calculate_and_log:273] -   Расчет: news_topic_intensity_MonPolicy_1d_z21 из 'combined_topic_intensity_MonetaryPolicyRF_raw'
+2025-04-21 01:01:20,659 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_topic_intensity_MonetaryPolicyRF_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,662 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'combined_topic_intensity_MonetaryPolicyRF_raw':
+2025-04-21 01:01:20,668 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-03-24  0.150000   0.102645  0.082899      0.571234
+2025-03-25  0.060004   0.102789  0.082819     -0.516607
+2025-03-26  0.075417   0.103997  0.082194     -0.347705
+2025-03-27  0.093379   0.105005  0.081914     -0.141930
+2025-03-28  0.222041   0.113180  0.084707      1.285148
+2025-03-29  0.065211   0.111523  0.085316     -0.542832
+2025-03-30  0.050000   0.111523  0.085316     -0.721120
+2025-03-31  0.072632   0.111385  0.085380     -0.453881
+2025-04-01  0.057691   0.111751  0.085119     -0.635107
+2025-04-02  0.078268   0.112548  0.084703     -0.404708
+2025-04-03  0.065187   0.112241  0.084870     -0.554423
+2025-04-04  0.524945   0.131282  0.123816      3.179434
+2025-04-05  0.050000   0.126520  0.124977     -0.612273
+2025-04-06  0.043113   0.125406  0.125642     -0.654985
+2025-04-07  0.200000   0.132548  0.125404      0.537876
+2025-04-08  0.093323   0.116469  0.105257     -0.219905
+2025-04-09  0.075532   0.114352  0.105629     -0.367511
+2025-04-10  0.196753   0.119930  0.106789      0.719397
+2025-04-11  0.075215   0.118986  0.107107     -0.408669
+2025-04-12  0.050000   0.114224  0.107880     -0.595333
+2025-04-13  0.026381   0.110719  0.109548     -0.769866
+2025-04-14  0.100000   0.108338  0.109195     -0.076357
+2025-04-15  0.076284   0.109113  0.108892     -0.301484
+2025-04-16  0.325024   0.120999  0.118250      1.725366
+2025-04-17  0.100000   0.121314  0.118182     -0.180352
+2025-04-18  0.120000   0.116455  0.115909      0.030583
+2025-04-21 01:01:20,669 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'combined_topic_intensity_MonetaryPolicyRF_raw': NaN=0/1828
+2025-04-21 01:01:20,669 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_intensity_MonPolicy_1d_z21: NaN=0/1828
+2025-04-21 01:01:20,670 - INFO - [calculate_and_log:273] -   Расчет: news_topic_intensity_Geopol_1d_z21 из 'combined_topic_intensity_GeopoliticsSanctions_raw'
+2025-04-21 01:01:20,670 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'combined_topic_intensity_GeopoliticsSanctions_raw' [Win=21, MinP=15]
+2025-04-21 01:01:20,674 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'combined_topic_intensity_GeopoliticsSanctions_raw':
+2025-04-21 01:01:20,680 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-03-24  0.200000   0.257020  0.160469     -0.355336
+2025-03-25  0.105000   0.244979  0.162003     -0.864049
+2025-03-26  0.602195   0.267585  0.177195      1.888377
+2025-03-27  0.403320   0.263148  0.172274      0.813657
+2025-03-28  0.100008   0.263123  0.172298     -0.946702
+2025-03-29  0.133031   0.257553  0.174619     -0.713112
+2025-03-30  0.280000   0.261363  0.174172      0.107004
+2025-03-31  0.123692   0.260079  0.175126     -0.778792
+2025-04-01  0.102320   0.235217  0.156931     -0.846849
+2025-04-02  0.100163   0.229723  0.159651     -0.811522
+2025-04-03  0.298529   0.236533  0.159377      0.388990
+2025-04-04  0.140006   0.236532  0.159378     -0.605644
+2025-04-05  0.300000   0.246056  0.156765      0.344108
+2025-04-06  0.263208   0.244249  0.156316      0.121288
+2025-04-07  0.450000   0.263296  0.155833      1.198102
+2025-04-08  0.177663   0.251881  0.152730     -0.485938
+2025-04-09  0.532110   0.270076  0.162438      1.613131
+2025-04-10  0.157045   0.263884  0.164226     -0.650559
+2025-04-11  0.175163   0.244926  0.148999     -0.468211
+2025-04-12  0.250000   0.240165  0.147058      0.066881
+2025-04-13  0.667837   0.264823  0.172414      2.337483
+2025-04-14  0.200000   0.264823  0.172414     -0.375976
+2025-04-15  0.126554   0.265850  0.171476     -0.812334
+2025-04-16  0.125003   0.243126  0.155555     -0.759369
+2025-04-17  0.150000   0.231063  0.152299     -0.532264
+2025-04-18  0.200000   0.235825  0.149535     -0.239576
+2025-04-21 01:01:20,680 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'combined_topic_intensity_GeopoliticsSanctions_raw': NaN=0/1828
+2025-04-21 01:01:20,681 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_intensity_Geopol_1d_z21: NaN=0/1828
+2025-04-21 01:01:20,682 - INFO - [calculate_and_log:273] -   Расчет: news_sentiment_level_21d_z63 из 'sentiment_level_21d'
+2025-04-21 01:01:20,682 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'sentiment_level_21d' [Win=63, MinP=47]
+2025-04-21 01:01:20,685 - DEBUG - [calculate_and_log:280] -     -> Результат для news_sentiment_level_21d_z63: NaN=14/1828
+2025-04-21 01:01:20,686 - INFO - [calculate_and_log:273] -   Расчет: news_topic_entropy_level_21d_z63 из 'entropy_level_21d'
+2025-04-21 01:01:20,686 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'entropy_level_21d' [Win=63, MinP=47]
+2025-04-21 01:01:20,689 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_entropy_level_21d_z63: NaN=14/1828
+2025-04-21 01:01:20,689 - INFO - [calculate_and_log:273] -   Расчет: news_topic_intensity_OilGas_21d_z63 из 'intensity_OilGas_level_21d'
+2025-04-21 01:01:20,690 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'intensity_OilGas_level_21d' [Win=63, MinP=47]
+2025-04-21 01:01:20,692 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'intensity_OilGas_level_21d':
+2025-04-21 01:01:20,703 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-02-10  0.170176   0.207940  0.015445     -2.445111
+2025-02-11  0.172361   0.207877  0.015584     -2.278914
+2025-02-12  0.174288   0.207719  0.015876     -2.105814
+2025-02-13  0.174489   0.207452  0.016292     -2.023292
+2025-02-14  0.152195   0.206521  0.017709     -3.067755
+2025-02-15  0.147433   0.205508  0.019197     -3.025273
+2025-02-16  0.143861   0.204358  0.020654     -2.929083
+2025-02-17  0.142765   0.203595  0.022005     -2.764358
+2025-02-18  0.139735   0.202654  0.023426     -2.685840
+2025-02-19  0.137781   0.201662  0.024810     -2.574764
+2025-02-20  0.144744   0.200404  0.025654     -2.169633
+2025-02-21  0.119988   0.199020  0.027564     -2.867257
+2025-02-22  0.116116   0.197556  0.029445     -2.765799
+2025-02-23  0.112102   0.195944  0.031272     -2.680986
+2025-02-24  0.114547   0.194316  0.032786     -2.432988
+2025-02-25  0.125313   0.193069  0.033892     -1.999151
+2025-02-26  0.124407   0.191804  0.034945     -1.928679
+2025-02-27  0.122949   0.190426  0.035923     -1.878359
+2025-02-28  0.121676   0.188982  0.036833     -1.827370
+2025-03-01  0.121036   0.187502  0.037663     -1.764744
+2025-03-02  0.115620   0.186048  0.038645     -1.822431
+2025-03-03  0.113132   0.184535  0.039608     -1.802744
+2025-03-04  0.113786   0.182629  0.040083     -1.717516
+2025-03-05  0.121011   0.180927  0.040390     -1.483432
+2025-03-06  0.120355   0.179137  0.040538     -1.450045
+2025-03-07  0.139141   0.178013  0.040651     -0.956226
+2025-03-08  0.139141   0.176692  0.040539     -0.926291
+2025-03-09  0.139141   0.175532  0.040552     -0.897399
+2025-03-10  0.141238   0.174396  0.040493     -0.818850
+2025-03-11  0.140538   0.173310  0.040469     -0.809821
+2025-03-12  0.139904   0.172096  0.040303     -0.798769
+2025-03-13  0.134283   0.171165  0.040491     -0.910882
+2025-03-14  0.152299   0.170371  0.040360     -0.447769
+2025-03-15  0.153728   0.169577  0.040184     -0.394422
+2025-03-16  0.160102   0.168888  0.039965     -0.219852
+2025-03-17  0.170752   0.168316  0.039670      0.061392
+2025-03-18  0.161479   0.167575  0.039348     -0.154910
+2025-03-19  0.166717   0.166695  0.038724      0.000554
+2025-03-20  0.178708   0.166110  0.038249      0.329356
+2025-03-21  0.179007   0.165260  0.037332      0.368222
+2025-03-22  0.186149   0.164689  0.036718      0.584484
+2025-03-23  0.189541   0.164154  0.036092      0.703402
+2025-03-24  0.185202   0.163215  0.034715      0.633336
+2025-03-25  0.178409   0.162479  0.033869      0.470332
+2025-03-26  0.170745   0.161699  0.033083      0.273418
+2025-03-27  0.170345   0.161162  0.032655      0.281193
+2025-03-28  0.151576   0.159968  0.031572     -0.265804
+2025-03-29  0.152058   0.158908  0.030673     -0.223345
+2025-03-30  0.155391   0.157916  0.029730     -0.084921
+2025-03-31  0.154055   0.156884  0.028683     -0.098639
+2025-04-01  0.155461   0.156155  0.028112     -0.024707
+2025-04-02  0.156241   0.155536  0.027663      0.025492
+2025-04-03  0.157509   0.154948  0.027210      0.094130
+2025-04-04  0.137345   0.153831  0.026443     -0.623470
+2025-04-05  0.134964   0.152646  0.025560     -0.691785
+2025-04-06  0.131149   0.151418  0.024676     -0.821383
+2025-04-07  0.131150   0.150258  0.023857     -0.800943
+2025-04-08  0.138042   0.149194  0.022847     -0.488109
+2025-04-09  0.140270   0.148368  0.022195     -0.364856
+2025-04-10  0.130367   0.147393  0.021598     -0.788330
+2025-04-11  0.129544   0.146758  0.021523     -0.799757
+2025-04-12  0.127163   0.146026  0.021391     -0.881806
+2025-04-13  0.121240   0.145110  0.021194     -1.126311
+2025-04-14  0.123621   0.144371  0.021117     -0.982650
+2025-04-15  0.130895   0.143713  0.020875     -0.614026
+2025-04-16  0.130857   0.143024  0.020564     -0.591661
+2025-04-17  0.134036   0.142382  0.020194     -0.413281
+2025-04-18  0.137271   0.142145  0.020165     -0.241690
+2025-04-21 01:01:20,703 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'intensity_OilGas_level_21d': NaN=14/1828
+2025-04-21 01:01:20,709 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_intensity_OilGas_21d_z63: NaN=14/1828
+2025-04-21 01:01:20,710 - INFO - [calculate_and_log:273] -   Расчет: news_topic_intensity_Fiscal_21d_z63 из 'intensity_Fiscal_level_21d'
+2025-04-21 01:01:20,710 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'intensity_Fiscal_level_21d' [Win=63, MinP=47]
+2025-04-21 01:01:20,713 - DEBUG - [calculate_rolling_zscore:106] - [calculate_rolling_zscore] Отладка для 'intensity_Fiscal_level_21d':
+2025-04-21 01:01:20,720 - DEBUG - [calculate_rolling_zscore:113] - 
+               input  roll_mean  roll_std  z_score_calc
+date                                                   
+2025-02-10  0.304955   0.231917  0.037274      1.959481
+2025-02-11  0.303823   0.231868  0.037175      1.935609
+2025-02-12  0.332472   0.232481  0.038508      2.596634
+2025-02-13  0.316720   0.232847  0.039202      2.139494
+2025-02-14  0.329567   0.233504  0.040471      2.373634
+2025-02-15  0.322424   0.234191  0.041610      2.120491
+2025-02-16  0.328376   0.234842  0.042761      2.187385
+2025-02-17  0.343251   0.235715  0.044398      2.422080
+2025-02-18  0.362849   0.236941  0.046800      2.690356
+2025-02-19  0.382026   0.238475  0.049895      2.877073
+2025-02-20  0.365856   0.240004  0.052281      2.407249
+2025-02-21  0.366554   0.241743  0.054624      2.284900
+2025-02-22  0.372338   0.243496  0.057002      2.260316
+2025-02-23  0.372196   0.245122  0.059182      2.147158
+2025-02-24  0.368660   0.246931  0.061188      1.989436
+2025-02-25  0.352469   0.248452  0.062608      1.661401
+2025-02-26  0.336040   0.249987  0.063559      1.353909
+2025-02-27  0.337115   0.251668  0.064448      1.325820
+2025-02-28  0.316248   0.253018  0.064902      0.974232
+2025-03-01  0.295454   0.253994  0.065073      0.637126
+2025-03-02  0.283525   0.254927  0.065068      0.439500
+2025-03-03  0.281995   0.256014  0.064937      0.400092
+2025-03-04  0.286676   0.257464  0.064580      0.452346
+2025-03-05  0.263154   0.258475  0.064153      0.072934
+2025-03-06  0.260573   0.259643  0.063498      0.014649
+2025-03-07  0.253247   0.260663  0.062857     -0.117988
+2025-03-08  0.267533   0.261738  0.062377      0.092902
+2025-03-09  0.286580   0.263196  0.061857      0.378039
+2025-03-10  0.294538   0.264794  0.061334      0.484935
+2025-03-11  0.276008   0.266071  0.060704      0.163687
+2025-03-12  0.262627   0.266948  0.060240     -0.071719
+2025-03-13  0.259676   0.267579  0.059947     -0.131836
+2025-03-14  0.261292   0.268275  0.059609     -0.117156
+2025-03-15  0.254149   0.268961  0.059186     -0.250269
+2025-03-16  0.252464   0.269942  0.058373     -0.299427
+2025-03-17  0.248857   0.270822  0.057614     -0.381250
+2025-03-18  0.255868   0.271984  0.056536     -0.285055
+2025-03-19  0.261582   0.273256  0.055354     -0.210906
+2025-03-20  0.240410   0.273846  0.054792     -0.610234
+2025-03-21  0.235858   0.274525  0.054034     -0.715599
+2025-03-22  0.241572   0.275151  0.053407     -0.628725
+2025-03-23  0.246241   0.275783  0.052813     -0.559370
+2025-03-24  0.247622   0.276521  0.052073     -0.554967
+2025-03-25  0.268551   0.277630  0.051124     -0.177579
+2025-03-26  0.268522   0.278825  0.049986     -0.206116
+2025-03-27  0.266606   0.279641  0.049346     -0.264158
+2025-03-28  0.277254   0.280665  0.048599     -0.070199
+2025-03-29  0.273998   0.281667  0.047782     -0.160482
+2025-03-30  0.254951   0.282471  0.046876     -0.587082
+2025-03-31  0.248810   0.283158  0.046039     -0.746080
+2025-04-01  0.244222   0.283723  0.045324     -0.871527
+2025-04-02  0.254895   0.284565  0.044257     -0.670406
+2025-04-03  0.256382   0.285188  0.043564     -0.661242
+2025-04-04  0.252401   0.285750  0.042893     -0.777485
+2025-04-05  0.247639   0.286180  0.042362     -0.909782
+2025-04-06  0.240216   0.286367  0.042128     -1.095492
+2025-04-07  0.252121   0.286697  0.041769     -0.827785
+2025-04-08  0.246149   0.286754  0.041710     -0.973505
+2025-04-09  0.239245   0.286435  0.041999     -1.123609
+2025-04-10  0.249793   0.286339  0.042078     -0.868527
+2025-04-11  0.260362   0.285987  0.042202     -0.607207
+2025-04-12  0.253219   0.285434  0.042403     -0.759742
+2025-04-13  0.246208   0.284651  0.042667     -0.900969
+2025-04-14  0.241447   0.283642  0.042929     -0.982913
+2025-04-15  0.216716   0.282260  0.043665     -1.501048
+2025-04-16  0.226111   0.280572  0.043749     -1.244849
+2025-04-17  0.239376   0.279344  0.043803     -0.912444
+2025-04-18  0.236300   0.277863  0.043654     -0.952095
+2025-04-21 01:01:20,721 - DEBUG - [calculate_rolling_zscore:116] - [calculate_rolling_zscore] Итоговый Z-score для 'intensity_Fiscal_level_21d': NaN=14/1828
+2025-04-21 01:01:20,727 - DEBUG - [calculate_and_log:280] -     -> Результат для news_topic_intensity_Fiscal_21d_z63: NaN=14/1828
+2025-04-21 01:01:20,729 - INFO - [calculate_and_log:273] -   Расчет: news_sentiment_level_63d_z1y из 'sentiment_level_63d'
+2025-04-21 01:01:20,729 - DEBUG - [calculate_rolling_zscore:78] - [calculate_rolling_zscore] Запуск для 'sentiment_level_63d' [Win=252, MinP=189]
+2025-04-21 01:01:20,733 - DEBUG - [calculate_and_log:280] -     -> Результат для news_sentiment_level_63d_z1y: NaN=46/1828
+2025-04-21 01:01:20,733 - INFO - [<module>:331] - Расчет финальных признаков завершен. Проверка NaN в результатах:
+2025-04-21 01:01:20,734 - INFO - [<module>:334] -   - news_sentiment_accel_1d_z21: NaN = 20/1828 (1.1%)
+2025-04-21 01:01:20,734 - INFO - [<module>:334] -   - news_topic_entropy_daily_z21: NaN = 3/1828 (0.2%)
+2025-04-21 01:01:20,735 - INFO - [<module>:334] -   - news_sentiment_extreme_1d_z21: NaN = 397/1828 (21.7%)
+2025-04-21 01:01:20,735 - INFO - [<module>:334] -   - news_topic_shock_1d_z21: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,736 - INFO - [<module>:334] -   - news_topic_intensity_MacroRF_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,736 - INFO - [<module>:334] -   - news_topic_intensity_MonPolicy_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,737 - INFO - [<module>:334] -   - news_topic_intensity_Geopol_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 01:01:20,737 - INFO - [<module>:334] -   - news_sentiment_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,737 - INFO - [<module>:334] -   - news_topic_entropy_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,738 - INFO - [<module>:334] -   - news_topic_intensity_OilGas_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,738 - INFO - [<module>:334] -   - news_topic_intensity_Fiscal_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 01:01:20,739 - INFO - [<module>:334] -   - news_sentiment_level_63d_z1y: NaN = 46/1828 (2.5%)
+2025-04-21 01:01:20,742 - INFO - [<module>:346] - Сохранение итогового файла (1828 строк) в final_qcml_nlp_features_v6_debugged.csv...
+2025-04-21 01:01:20,841 - INFO - [<module>:351] - Файл с финальными 12 признаками успешно сохранен.
+2025-04-21 01:01:20,842 - INFO - [<module>:354] - Скрипт завершил выполнение.

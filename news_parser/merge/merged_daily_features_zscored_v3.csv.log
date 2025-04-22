@@ -1,0 +1,47 @@
+2025-04-20 23:58:55,766 - INFO - Запуск скрипта слияния и нормализации файлов v3 (с исправлением nanmean)...
+2025-04-20 23:58:55,782 - INFO - Загружен файл raw_features.csv, строк: 1431
+2025-04-20 23:58:55,791 - INFO - Парсинг колонки 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-20 23:58:55,860 - INFO - Колонка 'news_topic_intensities_1d_raw' распарсена и заменена.
+2025-04-20 23:58:55,860 - INFO - Колонки в src1 после подготовки: ['news_sentiment_1d_raw', 'news_topic_entropy_1d_raw', 'news_sentiment_extreme_1d_raw', 'news_topic_intensity_MacroRF_raw', 'news_topic_intensity_MonetaryPolicyRF_raw', 'news_topic_intensity_GeopoliticsSanctions_raw', 'news_topic_intensity_OilGasEnergy_raw', 'news_topic_intensity_FiscalPolicyCorp_raw']
+2025-04-20 23:58:55,866 - INFO - Конвертировано 0 колонок в numeric для src1.
+2025-04-20 23:58:55,867 - INFO - Добавлен суффикс '_src1' к колонкам файла raw_features.csv
+2025-04-20 23:58:55,882 - INFO - Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-20 23:58:55,887 - INFO - Колонки в src2 после подготовки: ['news_sentiment_1d_raw', 'news_sentiment_chg_1d_raw', 'news_topic_intensity_MacroRF_raw', 'news_topic_intensity_MonetaryPolicyRF_raw', 'news_topic_intensity_GeopoliticsSanctions_raw', 'news_topic_intensity_OilGasEnergy_raw', 'news_topic_intensity_FiscalPolicyCorp_raw', 'news_topic_focus_shift_1d_raw', 'news_topic_entropy_1d_raw', '_topic_vector_internal']
+2025-04-20 23:58:55,892 - INFO - Конвертировано 0 колонок в numeric для src2.
+2025-04-20 23:58:55,892 - INFO - Добавлен суффикс '_src2' к колонкам файла gemini_daily_headline_features_structured_v2 (1).csv
+2025-04-20 23:58:55,904 - INFO - Колонки, для которых будет рассчитываться Z-score: ['news_topic_intensity_MonetaryPolicyRF_raw', 'news_sentiment_1d_raw', 'news_topic_intensity_OilGasEnergy_raw', 'news_topic_intensity_MacroRF_raw', 'news_topic_entropy_1d_raw', 'news_topic_intensity_FiscalPolicyCorp_raw', 'news_topic_intensity_GeopoliticsSanctions_raw']
+2025-04-20 23:58:55,905 - INFO - Колонки, для которых будет усредняться Z-score: ['news_topic_entropy_1d_raw']
+2025-04-20 23:58:55,905 - INFO - Колонки, которые будут усредняться после Z-нормализации (если требуется): ['news_sentiment_1d_raw', 'news_topic_intensity_MacroRF_raw', 'news_topic_intensity_MonetaryPolicyRF_raw', 'news_topic_intensity_GeopoliticsSanctions_raw', 'news_topic_intensity_OilGasEnergy_raw', 'news_topic_intensity_FiscalPolicyCorp_raw']
+2025-04-20 23:58:55,905 - INFO - Уникальные колонки Source 1: ['news_sentiment_extreme_1d_raw']
+2025-04-20 23:58:55,905 - INFO - Уникальные колонки Source 2: []
+2025-04-20 23:58:55,905 - INFO - Расчет Z-score...
+2025-04-20 23:58:55,910 - INFO -   - Рассчитан Z-score для news_topic_intensity_MonetaryPolicyRF_raw_src1 -> news_topic_intensity_MonetaryPolicyRF_raw_z_src1
+2025-04-20 23:58:55,915 - INFO -   - Рассчитан Z-score для news_topic_intensity_MonetaryPolicyRF_raw_src2 -> news_topic_intensity_MonetaryPolicyRF_raw_z_src2
+2025-04-20 23:58:55,917 - INFO -   - Рассчитан Z-score для news_sentiment_1d_raw_src1 -> news_sentiment_1d_raw_z_src1
+2025-04-20 23:58:55,920 - INFO -   - Рассчитан Z-score для news_sentiment_1d_raw_src2 -> news_sentiment_1d_raw_z_src2
+2025-04-20 23:58:55,922 - INFO -   - Рассчитан Z-score для news_topic_intensity_OilGasEnergy_raw_src1 -> news_topic_intensity_OilGasEnergy_raw_z_src1
+2025-04-20 23:58:55,924 - INFO -   - Рассчитан Z-score для news_topic_intensity_OilGasEnergy_raw_src2 -> news_topic_intensity_OilGasEnergy_raw_z_src2
+2025-04-20 23:58:55,927 - INFO -   - Рассчитан Z-score для news_topic_intensity_MacroRF_raw_src1 -> news_topic_intensity_MacroRF_raw_z_src1
+2025-04-20 23:58:55,930 - INFO -   - Рассчитан Z-score для news_topic_intensity_MacroRF_raw_src2 -> news_topic_intensity_MacroRF_raw_z_src2
+2025-04-20 23:58:55,932 - INFO -   - Рассчитан Z-score для news_topic_entropy_1d_raw_src1 -> news_topic_entropy_1d_raw_z_src1
+2025-04-20 23:58:55,935 - INFO -   - Рассчитан Z-score для news_topic_entropy_1d_raw_src2 -> news_topic_entropy_1d_raw_z_src2
+2025-04-20 23:58:55,937 - INFO -   - Рассчитан Z-score для news_topic_intensity_FiscalPolicyCorp_raw_src1 -> news_topic_intensity_FiscalPolicyCorp_raw_z_src1
+2025-04-20 23:58:55,940 - INFO -   - Рассчитан Z-score для news_topic_intensity_FiscalPolicyCorp_raw_src2 -> news_topic_intensity_FiscalPolicyCorp_raw_z_src2
+2025-04-20 23:58:55,944 - INFO -   - Рассчитан Z-score для news_topic_intensity_GeopoliticsSanctions_raw_src1 -> news_topic_intensity_GeopoliticsSanctions_raw_z_src1
+2025-04-20 23:58:55,948 - INFO -   - Рассчитан Z-score для news_topic_intensity_GeopoliticsSanctions_raw_src2 -> news_topic_intensity_GeopoliticsSanctions_raw_z_src2
+2025-04-20 23:58:55,949 - INFO - Объединение данных по дате...
+2025-04-20 23:58:55,963 - INFO - Создание усредненных Z-score колонок...
+2025-04-20 23:58:55,966 - INFO -   - Создана усредненная колонка: news_topic_intensity_MonetaryPolicyRF_raw_z_merged из ['news_topic_intensity_MonetaryPolicyRF_raw_z_src1', 'news_topic_intensity_MonetaryPolicyRF_raw_z_src2']
+2025-04-20 23:58:55,973 - INFO -   - Создана усредненная колонка: news_sentiment_1d_raw_z_merged из ['news_sentiment_1d_raw_z_src1', 'news_sentiment_1d_raw_z_src2']
+2025-04-20 23:58:55,976 - INFO -   - Создана усредненная колонка: news_topic_intensity_OilGasEnergy_raw_z_merged из ['news_topic_intensity_OilGasEnergy_raw_z_src1', 'news_topic_intensity_OilGasEnergy_raw_z_src2']
+2025-04-20 23:58:55,979 - INFO -   - Создана усредненная колонка: news_topic_intensity_MacroRF_raw_z_merged из ['news_topic_intensity_MacroRF_raw_z_src1', 'news_topic_intensity_MacroRF_raw_z_src2']
+2025-04-20 23:58:55,989 - INFO -   - Создана усредненная колонка: news_topic_entropy_1d_raw_z_merged из ['news_topic_entropy_1d_raw_z_src1', 'news_topic_entropy_1d_raw_z_src2']
+2025-04-20 23:58:55,993 - INFO -   - Создана усредненная колонка: news_topic_intensity_FiscalPolicyCorp_raw_z_merged из ['news_topic_intensity_FiscalPolicyCorp_raw_z_src1', 'news_topic_intensity_FiscalPolicyCorp_raw_z_src2']
+2025-04-20 23:58:55,999 - INFO -   - Создана усредненная колонка: news_topic_intensity_GeopoliticsSanctions_raw_z_merged из ['news_topic_intensity_GeopoliticsSanctions_raw_z_src1', 'news_topic_intensity_GeopoliticsSanctions_raw_z_src2']
+2025-04-20 23:58:55,999 - INFO - Добавление уникальных колонок...
+2025-04-20 23:58:55,999 - INFO -   - Сохранена уникальная колонка: news_sentiment_extreme_1d_raw_src1
+2025-04-20 23:58:56,003 - INFO - Итоговый DataFrame будет содержать колонки: ['news_topic_intensity_MonetaryPolicyRF_raw_z_merged', 'news_sentiment_1d_raw_z_merged', 'news_topic_intensity_OilGasEnergy_raw_z_merged', 'news_topic_intensity_MacroRF_raw_z_merged', 'news_topic_entropy_1d_raw_z_merged', 'news_topic_intensity_FiscalPolicyCorp_raw_z_merged', 'news_topic_intensity_GeopoliticsSanctions_raw_z_merged', 'news_sentiment_extreme_1d_raw_src1']
+2025-04-20 23:58:56,004 - INFO - Колонки переименованы: ['news_topic_intensity_MonetaryPolicyRF_raw_z', 'news_sentiment_1d_raw_z', 'news_topic_intensity_OilGasEnergy_raw_z', 'news_topic_intensity_MacroRF_raw_z', 'news_topic_entropy_1d_raw_z', 'news_topic_intensity_FiscalPolicyCorp_raw_z', 'news_topic_intensity_GeopoliticsSanctions_raw_z', 'news_sentiment_extreme_1d_raw']
+2025-04-20 23:58:56,004 - INFO - Сохранение итогового файла в merged_daily_features_zscored_v3.csv...
+2025-04-20 23:58:56,075 - INFO - Файл успешно сохранен.
+2025-04-20 23:58:56,076 - INFO - Слияние и нормализация завершены.

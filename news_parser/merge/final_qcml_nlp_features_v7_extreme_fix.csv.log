@@ -1,0 +1,75 @@
+2025-04-21 00:47:16,374 - INFO - [<module>:178] - Запуск скрипта слияния и расчета v7 (отладка extreme)...
+2025-04-21 00:47:16,375 - INFO - [load_and_prepare_data:109] - [load_and_prepare_data] Загрузка src1 из raw_features.csv...
+2025-04-21 00:47:16,390 - INFO - [load_and_prepare_data:113] - [load_and_prepare_data] Загружен файл raw_features.csv, строк: 1431
+2025-04-21 00:47:16,400 - INFO - [load_and_prepare_data:128] - [load_and_prepare_data] Парсинг 'news_topic_intensities_1d_raw' для raw_features.csv...
+2025-04-21 00:47:16,501 - INFO - [load_and_prepare_data:132] - [load_and_prepare_data] Колонка 'news_topic_intensities_1d_raw' распарсена.
+2025-04-21 00:47:16,502 - ERROR - [load_and_prepare_data:151] - !!! КРИТИЧЕСКАЯ ОШИБКА: Колонка 'news_sentiment_extreme_rate_1d_raw' ОТСУТСТВУЕТ в raw_features.csv (src1) !!!
+2025-04-21 00:47:16,502 - WARNING - [load_and_prepare_data:162] - [load_and_prepare_data] В raw_features.csv (src1) отсутствуют др. колонки: ['news_topic_focus_shift_1d_raw', 'news_sentiment_chg_1d_raw'].
+2025-04-21 00:47:16,508 - INFO - [load_and_prepare_data:172] - [load_and_prepare_data] Подготовка src1 завершена.
+2025-04-21 00:47:16,508 - INFO - [load_and_prepare_data:109] - [load_and_prepare_data] Загрузка src2 из gemini_daily_headline_features_structured_v2 (1).csv...
+2025-04-21 00:47:16,521 - INFO - [load_and_prepare_data:113] - [load_and_prepare_data] Загружен файл gemini_daily_headline_features_structured_v2 (1).csv, строк: 1826
+2025-04-21 00:47:16,532 - INFO - [load_and_prepare_data:172] - [load_and_prepare_data] Подготовка src2 завершена.
+2025-04-21 00:47:16,533 - INFO - [<module>:186] - Слияние данных по дате...
+2025-04-21 00:47:16,540 - INFO - [<module>:190] - Слияние завершено. Строк: 1828.
+2025-04-21 00:47:16,540 - INFO - [<module>:193] - Создание комбинированных сырых признаков...
+2025-04-21 00:47:16,543 - WARNING - [combine_cols:197] - [combine_cols] Колонки news_sentiment_extreme_rate_1d_raw_src1, news_sentiment_extreme_rate_1d_raw_src2 не найдены.
+2025-04-21 00:47:16,557 - INFO - [<module>:223] - Комбинированные сырые признаки созданы. Проверка NaN:
+2025-04-21 00:47:16,558 - INFO - [<module>:228] -   - combined_sentiment_1d_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,558 - INFO - [<module>:228] -   - combined_sentiment_chg_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,558 - INFO - [<module>:228] -   - combined_sentiment_extreme_rate_1d_raw: NaN = 1828/1828 (100.0%)
+2025-04-21 00:47:16,561 - INFO - [<module>:231] -     -> Статистика для combined_sentiment_extreme_rate_1d_raw:
+count    0.0
+mean     NaN
+std      NaN
+min      NaN
+25%      NaN
+50%      NaN
+75%      NaN
+max      NaN
+2025-04-21 00:47:16,562 - INFO - [<module>:228] -   - combined_topic_focus_shift_1d_raw: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,563 - INFO - [<module>:228] -   - combined_topic_entropy_1d_raw: NaN = 3/1828 (0.2%)
+2025-04-21 00:47:16,564 - INFO - [<module>:228] -   - combined_topic_intensity_MacroRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,564 - INFO - [<module>:228] -   - combined_topic_intensity_MonetaryPolicyRF_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,565 - INFO - [<module>:228] -   - combined_topic_intensity_GeopoliticsSanctions_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,565 - INFO - [<module>:228] -   - combined_topic_intensity_OilGasEnergy_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,566 - INFO - [<module>:228] -   - combined_topic_intensity_FiscalPolicyCorp_raw: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,566 - INFO - [<module>:239] - Начало расчета финальных 12 признаков...
+2025-04-21 00:47:16,567 - INFO - [calculate_and_log:254] -   Расчет: news_sentiment_accel_1d_z21 из 'sentiment_accel'
+2025-04-21 00:47:16,570 - INFO - [calculate_and_log:258] -     -> Результат для news_sentiment_accel_1d_z21: NaN=20/1828
+2025-04-21 00:47:16,571 - INFO - [calculate_and_log:254] -   Расчет: news_topic_entropy_daily_z21 из 'combined_topic_entropy_1d_raw'
+2025-04-21 00:47:16,573 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_entropy_daily_z21: NaN=3/1828
+2025-04-21 00:47:16,574 - WARNING - [calculate_and_log:253] -   Пропуск: news_sentiment_extreme_1d_z21 (вход 'combined_sentiment_extreme_rate_1d_raw' вся NaN)
+2025-04-21 00:47:16,575 - INFO - [calculate_and_log:254] -   Расчет: news_topic_shock_1d_z21 из 'combined_topic_focus_shift_1d_raw'
+2025-04-21 00:47:16,579 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_shock_1d_z21: NaN=14/1828
+2025-04-21 00:47:16,579 - INFO - [calculate_and_log:254] -   Расчет: news_topic_intensity_MacroRF_1d_z21 из 'combined_topic_intensity_MacroRF_raw'
+2025-04-21 00:47:16,582 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_intensity_MacroRF_1d_z21: NaN=0/1828
+2025-04-21 00:47:16,582 - INFO - [calculate_and_log:254] -   Расчет: news_topic_intensity_MonPolicy_1d_z21 из 'combined_topic_intensity_MonetaryPolicyRF_raw'
+2025-04-21 00:47:16,586 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_intensity_MonPolicy_1d_z21: NaN=0/1828
+2025-04-21 00:47:16,587 - INFO - [calculate_and_log:254] -   Расчет: news_topic_intensity_Geopol_1d_z21 из 'combined_topic_intensity_GeopoliticsSanctions_raw'
+2025-04-21 00:47:16,594 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_intensity_Geopol_1d_z21: NaN=0/1828
+2025-04-21 00:47:16,595 - INFO - [calculate_and_log:254] -   Расчет: news_sentiment_level_21d_z63 из 'sentiment_level_21d'
+2025-04-21 00:47:16,606 - INFO - [calculate_and_log:258] -     -> Результат для news_sentiment_level_21d_z63: NaN=14/1828
+2025-04-21 00:47:16,607 - INFO - [calculate_and_log:254] -   Расчет: news_topic_entropy_level_21d_z63 из 'entropy_level_21d'
+2025-04-21 00:47:16,612 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_entropy_level_21d_z63: NaN=14/1828
+2025-04-21 00:47:16,613 - INFO - [calculate_and_log:254] -   Расчет: news_topic_intensity_OilGas_21d_z63 из 'intensity_OilGas_level_21d'
+2025-04-21 00:47:16,616 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_intensity_OilGas_21d_z63: NaN=14/1828
+2025-04-21 00:47:16,617 - INFO - [calculate_and_log:254] -   Расчет: news_topic_intensity_Fiscal_21d_z63 из 'intensity_Fiscal_level_21d'
+2025-04-21 00:47:16,619 - INFO - [calculate_and_log:258] -     -> Результат для news_topic_intensity_Fiscal_21d_z63: NaN=14/1828
+2025-04-21 00:47:16,620 - INFO - [calculate_and_log:254] -   Расчет: news_sentiment_level_63d_z1y из 'sentiment_level_63d'
+2025-04-21 00:47:16,623 - INFO - [calculate_and_log:258] -     -> Результат для news_sentiment_level_63d_z1y: NaN=46/1828
+2025-04-21 00:47:16,623 - INFO - [<module>:291] - Расчет финальных признаков завершен. Проверка NaN в результатах:
+2025-04-21 00:47:16,624 - INFO - [<module>:294] -   - news_sentiment_accel_1d_z21: NaN = 20/1828 (1.1%)
+2025-04-21 00:47:16,625 - INFO - [<module>:294] -   - news_topic_entropy_daily_z21: NaN = 3/1828 (0.2%)
+2025-04-21 00:47:16,628 - INFO - [<module>:294] -   - news_sentiment_extreme_1d_z21: NaN = 1828/1828 (100.0%)
+2025-04-21 00:47:16,629 - INFO - [<module>:294] -   - news_topic_shock_1d_z21: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,630 - INFO - [<module>:294] -   - news_topic_intensity_MacroRF_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,631 - INFO - [<module>:294] -   - news_topic_intensity_MonPolicy_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,631 - INFO - [<module>:294] -   - news_topic_intensity_Geopol_1d_z21: NaN = 0/1828 (0.0%)
+2025-04-21 00:47:16,631 - INFO - [<module>:294] -   - news_sentiment_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,632 - INFO - [<module>:294] -   - news_topic_entropy_level_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,632 - INFO - [<module>:294] -   - news_topic_intensity_OilGas_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,633 - INFO - [<module>:294] -   - news_topic_intensity_Fiscal_21d_z63: NaN = 14/1828 (0.8%)
+2025-04-21 00:47:16,633 - INFO - [<module>:294] -   - news_sentiment_level_63d_z1y: NaN = 46/1828 (2.5%)
+2025-04-21 00:47:16,636 - INFO - [<module>:305] - Сохранение итогового файла (1828 строк) в final_qcml_nlp_features_v7_extreme_fix.csv...
+2025-04-21 00:47:16,707 - INFO - [<module>:310] - Файл с финальными 12 признаками успешно сохранен.
+2025-04-21 00:47:16,707 - INFO - [<module>:313] - Скрипт завершил выполнение.

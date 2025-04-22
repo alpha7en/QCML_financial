@@ -1,0 +1,5 @@
+2025-04-21 00:12:48,455 - INFO - Запуск расчета финальных NLP признаков из файла: merged_daily_features_zscored_v3.csv
+2025-04-21 00:12:48,467 - INFO - Загружено 1828 строк из merged_daily_features_zscored_v3.csv
+2025-04-21 00:12:48,474 - INFO - Дата обработана, отсортирована и установлена как индекс.
+2025-04-21 00:12:48,475 - ERROR - Во входном файле отсутствуют необходимые для расчета колонки: ['news_sentiment_1d_raw', 'news_sentiment_chg_1d_raw', 'news_sentiment_extreme_rate_1d_raw', 'news_topic_focus_shift_1d_raw', 'news_topic_entropy_1d_raw', 'news_topic_intensity_MacroRF_raw', 'news_topic_intensity_MonetaryPolicyRF_raw', 'news_topic_intensity_GeopoliticsSanctions_raw', 'news_topic_intensity_OilGasEnergy_raw', 'news_topic_intensity_FiscalPolicyCorp_raw']
+2025-04-21 00:12:48,483 - ERROR - Без этих колонок расчет невозможен. Проверьте скрипт слияния.

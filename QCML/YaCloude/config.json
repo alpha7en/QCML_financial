@@ -1,0 +1,21 @@
+{
+  "target_col": "IMO_fwd_log_ret_3d",
+  "sequence_length": 30,
+  "final_test_set_size": 0.1,
+  "k_folds": 8,
+  "val_split_for_final": 0.1,
+  "batch_size": 64,
+  "learning_rate": 0.01,
+  "epochs": 320,
+  "cnn_out_channels": 32,
+  "cnn_kernel_size": 5,
+  "gru_hidden_size": 64,
+  "gru_num_layers": 2,
+  "mlp_hidden_size": 32,
+  "dropout_rate": 0.3,
+  "weight_decay": 1e-5,
+  "early_stopping_patience": 60,
+  "scheduler_patience": 20,
+  "scheduler_factor": 0.1,
+  "random_seed": 42
+}
