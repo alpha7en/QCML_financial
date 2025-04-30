@@ -9,7 +9,7 @@ env:
   requirements-file: requirements.txt
 inputs:
 
-  - final_dataset.csv: DATA_CSV
+  - 0moex_qcml_final_dataset_with_embeddings.parquet: DATA_CSV
 
   - config.json: CONFIG_JSON
 

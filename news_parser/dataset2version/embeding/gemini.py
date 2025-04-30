@@ -148,6 +148,7 @@ if __name__ == "__main__":
     # Например, загрузите его из файла или получите из вашего DataFrame
     list_of_tickers_to_describe = [ 'UNKL', 'UPRO', 'URKZ', 'USBN', 'UTAR', 'UWGN', 'VEON-RX', 'VGSB', 'VGSBP', 'VJGZ', 'VJGZP', 'VKCO', 'VLHZ', 'VRSB', 'VRSBP', 'VSEH', 'VSMO', 'VSYD', 'VSYDP', 'VTBR', 'WTCM', 'WTCMP', 'WUSH', 'X5', 'YAKG', 'YDEX', 'YKEN', 'YKENP', 'YRSB', 'YRSBP', 'ZAYM', 'ZILL', 'ZVEZ']
 
+
     # Убедитесь, что тикеры в верхнем регистре и без лишних символов
 
     print(f"Запрашиваем описания для {len(list_of_tickers_to_describe)} тикеров...")
