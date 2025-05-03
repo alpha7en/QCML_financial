@@ -1,0 +1,24 @@
+{
+  "data": {
+    "data_path": "0moex_qcml_final_dataset_with_embeddings.parquet",
+    "target_col": "FinalTarget"
+  },
+  "model": {
+    "n_qubits": 5,
+    "n_layers_vqe": 3,
+    "l_u_layers": 1
+  },
+  "training": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "n_epochs": 10,
+    "batch_size": 8,
+    "vqe_steps": 40,
+    "vqe_lr": 0.04,
+    "vqe_tol":1e-4,
+    "theta_lr": 0.015
+  },
+  "output": {
+    "results_prefix": "qcml_final_run"
+  }
+}
