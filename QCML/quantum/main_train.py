@@ -151,7 +151,7 @@ def init_worker(model_config):
 
     try:
         # Создаем устройство и модель ЗДЕСЬ, в дочернем процессе
-        dev = qml.device("default.qubit", wires=n_qubits)
+        dev = qml.device("lightning.qubit", wires=n_qubits)
         worker_model = QCMLModel(n_qubits=n_qubits, k_input_features=k_features,
                                  n_layers_vqe=n_layers_vqe, l_u_layers=l_u_layers, dev=dev)
         # print(f"Worker PID {os.getpid()}: Initialized QCMLModel.") # Можно убрать для чистоты вывода
@@ -334,7 +334,7 @@ def train_and_evaluate(config_path):
 
     # --- 2. Инициализация Параметров (Модель создается в воркерах!) ---
     # Создаем временную модель ТОЛЬКО для получения форм параметров
-    temp_dev = qml.device("default.qubit", wires=n_qubits) # Можно использовать 'default.qubit' для форм
+    temp_dev = qml.device("lightning.qubit", wires=n_qubits) # Можно использовать 'default.qubit' для форм
     try:
         temp_model = QCMLModel(n_qubits=n_qubits, k_input_features=k_features, n_layers_vqe=n_layers_vqe, l_u_layers=l_u_layers, dev=temp_dev)
         phi_shape = temp_model.phi_shape
