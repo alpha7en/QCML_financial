@@ -9,6 +9,7 @@ import sys
 import os
 import multiprocessing
 from functools import partial
+import torch
 
 # --- Проверка и заглушка QCMLModel (остается без изменений) ---
 try:
@@ -60,6 +61,82 @@ def find_ground_state_vqe(model, thetas_input, xs_input, initial_phi,
     return phi, final_energy
 
 
+# --- *НОВОЕ*: Вспомогательная функция find_ground_state_vqe с PyTorch оптимизатором ---
+def find_ground_state_vqe_pytorch(model, thetas_input_np, xs_input_np, initial_phi_np,
+                                  vqe_steps=100, vqe_lr=0.05, vqe_tol=1e-5, verbose=True):
+    """
+    Находит основное состояние с помощью VQE, используя PyTorch оптимизатор (torch.optim.Adam)
+    и PyTorch-интерфейс QNode в модели.
+    """
+    if verbose: print(f" Starting VQE optimization (PyTorch Adam, steps={vqe_steps}, lr={vqe_lr}, tol={vqe_tol})...")
+
+    # Определяем устройство PyTorch. Для параметров QNode, которые обрабатываются
+    # lightning.qubit (CPU-симулятор), параметры обычно должны оставаться на CPU.
+    device = torch.device("cpu")
+
+    # 1. Преобразование NumPy массивов в PyTorch тензоры.
+    #    phi - это параметры, которые мы будем оптимизировать, поэтому requires_grad=True.
+    #    Используем torch.float64 для совместимости с PennyLane, который часто использует float64.
+    phi = torch.tensor(initial_phi_np, dtype=torch.float64, device=device, requires_grad=True)
+
+    #    thetas_input и xs_input в контексте этой VQE-оптимизации являются константами
+    #    (они не оптимизируются *этой* функцией VQE). Градиенты по ним здесь не нужны.
+    thetas_input_torch = torch.tensor(thetas_input_np, dtype=torch.float64, device=device)
+    xs_input_torch = torch.tensor(xs_input_np, dtype=torch.float64, device=device)
+
+    # 2. Инициализация оптимизатора PyTorch (Adam).
+    #    Передаем в оптимизатор список тензоров, которые нужно оптимизировать (в данном случае, только [phi]).
+    opt_phi_torch = torch.optim.Adam([phi], lr=vqe_lr)
+
+    energy_prev = float('inf')  # Используем float('inf') для корректного первого сравнения
+    steps_done = 0
+
+    for i in range(vqe_steps):
+        steps_done = i + 1
+
+        # 3. Цикл оптимизации PyTorch:
+        opt_phi_torch.zero_grad()  # Обнуляем градиенты параметров phi перед новым вычислением.
+        # Это стандартный шаг в PyTorch.
+
+        # Вызываем новую функцию energy_vqe_pytorch из вашей модели.
+        # Она принимает тензоры PyTorch и возвращает тензор PyTorch (скалярную энергию).
+        # Поскольку phi имеет requires_grad=True, PyTorch будет отслеживать операции
+        # для вычисления градиента current_energy по phi.
+        current_energy = model.energy_vqe_pytorch(phi, thetas_input_torch, xs_input_torch)
+
+        # Вычисляем градиенты (d_energy/d_phi) с помощью механизма autograd PyTorch.
+        # Градиенты будут сохранены в атрибуте .grad тензора phi (т.е., phi.grad).
+        current_energy.backward()
+
+        # Обновляем параметры phi на основе вычисленных градиентов.
+        # Оптимизатор Adam использует phi.grad для выполнения шага обновления.
+        opt_phi_torch.step()
+
+        # Получаем скалярное значение энергии из тензора PyTorch для логирования и проверки сходимости.
+        energy_val = current_energy.item()
+
+        if verbose and (i % 10 == 0 or i == vqe_steps - 1):
+            print(f"  VQE (PyTorch) iter {i:>3}: energy = {energy_val:.6f}")
+
+        if abs(energy_val - energy_prev) < vqe_tol:
+            if verbose: print(f" VQE (PyTorch) converged at step {i + 1}, energy = {energy_val:.6f}")
+            break
+        energy_prev = energy_val
+
+    # Получаем финальную энергию после последнего шага.
+    # Используем .detach() для phi, чтобы создать новый тензор, не требующий градиентов,
+    # если phi будет дальше использоваться в вычислениях, где градиенты не нужны.
+    # Это хорошая практика перед финальным вычислением или возвратом.
+    with torch.no_grad():  # Гарантирует, что операции внутри блока не будут отслеживаться для градиентов
+        final_energy_val = model.energy_vqe_pytorch(phi, thetas_input_torch, xs_input_torch).item()
+
+    # Возвращаем оптимизированные параметры phi как NumPy массив для совместимости
+    # с остальной частью вашего кода, которая ожидает NumPy.
+    # .detach() убирает тензор из графа вычислений.
+    # .cpu() перемещает тензор на CPU (если он был на GPU, здесь он уже на CPU).
+    # .numpy() конвертирует тензор CPU в NumPy массив.
+    return phi.detach().cpu().numpy(), final_energy_val
+
 # --- Глобальная переменная для хранения модели в воркере (без изменений) ---
 worker_model = None
 
@@ -102,7 +179,7 @@ def process_single_sample(xs_input_t, current_thetas, phi_guess, vqe_config):
 
     try:
         # --- VQE Фаза ---
-        phi_opt, _ = find_ground_state_vqe(worker_model, current_thetas, xs_input_t, phi_guess, verbose=False, **vqe_config)
+        phi_opt, _ = find_ground_state_vqe_pytorch(worker_model, current_thetas, xs_input_t, phi_guess, verbose=False, **vqe_config)
 
         # --- Theta Gradient Фаза ---
         psi_t = worker_model.get_state_vector(phi_opt)
@@ -148,7 +225,7 @@ def predict_single_sample(xs_input_t, thetas_input_trained, initial_phi_guess, v
     try:
         # --- VQE Фаза для предсказания ---
         # Используем initial_phi_guess для каждого сэмпла независимо
-        phi_pred, _ = find_ground_state_vqe(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, verbose=False, **vqe_config)
+        phi_pred, _ = find_ground_state_vqe_pytorch(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, verbose=False, **vqe_config)
 
         # --- Предсказание ---
         # Используем try-except, так как predict_target может не быть в заглушке

@@ -4,7 +4,7 @@
     "target_col": "FinalTarget"
   },
   "model": {
-    "n_qubits": 6,
+    "n_qubits": 5,
     "n_layers_vqe": 3,
     "l_u_layers": 1
   },
@@ -12,12 +12,12 @@
     "test_size": 0.2,
     "random_state": 42,
     "n_epochs": 7,
-    "batch_size": 6,
+    "batch_size": 4,
     "vqe_steps": 10,
     "vqe_lr": 0.8,
     "vqe_tol":1e-4,
     "theta_lr": 0.1,
-    "num_workers": 6
+    "num_workers": 4
   },
   "output": {
     "results_prefix": "qcml_final_run"
