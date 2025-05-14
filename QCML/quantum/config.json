@@ -12,12 +12,12 @@
     "test_size": 0.2,
     "random_state": 42,
     "n_epochs": 7,
-    "batch_size": 4,
-    "vqe_steps": 10,
+    "batch_size": 6,
+    "vqe_steps": 3,
     "vqe_lr": 0.8,
     "vqe_tol":1e-4,
     "theta_lr": 0.1,
-    "num_workers": 4
+    "num_workers": 6
   },
   "output": {
     "results_prefix": "qcml_final_run"
