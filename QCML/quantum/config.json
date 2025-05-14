@@ -4,20 +4,20 @@
     "target_col": "FinalTarget"
   },
   "model": {
-    "n_qubits": 5,
-    "n_layers_vqe": 2,
+    "n_qubits": 6,
+    "n_layers_vqe": 3,
     "l_u_layers": 1
   },
   "training": {
     "test_size": 0.2,
     "random_state": 42,
-    "n_epochs": 5,
-    "batch_size": 24,
-    "vqe_steps": 5,
+    "n_epochs": 7,
+    "batch_size": 6,
+    "vqe_steps": 10,
     "vqe_lr": 0.8,
     "vqe_tol":1e-4,
     "theta_lr": 0.1,
-    "num_workers": 24
+    "num_workers": 6
   },
   "output": {
     "results_prefix": "qcml_final_run"

@@ -578,7 +578,7 @@ def main(config, data_csv_path, output_model_path, output_scaler_path, output_pl
 
 # --- Точка входа для скрипта ---
 if __name__ == "__main__":
-    # Добавьте в ваш config.json параметры:
+    # Добавьте в ваш config2.json параметры:
     # "sequence_length": 20,
     # "cnn_out_channels": 32,
     # "cnn_kernel_size": 3,
