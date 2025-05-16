@@ -153,6 +153,7 @@ class QCMLModel:
         self._vqe_qnode_pytorch_cached = None
         self._state_vector_qnode_cached = None
         self._predict_qnode_cached = None  # Добавил для консистентности
+        self._vqe_qnode_spsa_cached = None
 
     def _get_vqe_qnode_pytorch(self):
         if self._vqe_qnode_pytorch_cached is None:
@@ -243,6 +244,34 @@ class QCMLModel:
     # def energy_vqe(self, phi, thetas_input, xs_input): ...
     # def _get_vqe_qnode(self): ...
     # (Убедитесь, что все вызовы используют новые _pytorch версии и гамильтонианы там, где нужно)
+
+    def _get_vqe_qnode_for_spsa(self):
+        if self._vqe_qnode_spsa_cached is None:
+            # Нет interface='torch', нет diff_method (SPSA не нужен градиент от QNode)
+            # Принимает и возвращает NumPy-совместимые типы
+            @qml.qnode(self.dev)
+            def qnode_func(phi_np, theta_k_np):
+                self._vqe_ansatz_template(weights=phi_np, wires=range(self.n_qubits))
+                self._apply_U_template(weights=theta_k_np, wires=range(self.n_qubits))
+                # Измеряем Паули-гамильтонианы
+                expval_O2 = qml.expval(self.O2_op_hamiltonian)
+                expval_O = qml.expval(self.O_op_hamiltonian)
+                return expval_O2, expval_O  # Вернет NumPy float (или pnp.float)
+
+            self._vqe_qnode_spsa_cached = qnode_func
+            print(f"Created VQE SPSA QNode (NumPy interface) for device {self.dev.name}")
+        return self._vqe_qnode_spsa_cached
+
+    def energy_vqe_for_spsa(self, phi_np, thetas_input_np, xs_input_np):
+        E = 0.0
+        qnode_for_spsa = self._get_vqe_qnode_for_spsa()
+        for k_idx in range(self.k_features):
+            theta_k_slice_np = thetas_input_np[k_idx]
+            xs_k_val_np = xs_input_np[k_idx]
+            exp_O2, exp_O = qnode_for_spsa(phi_np, theta_k_slice_np)
+            E += exp_O2 - 2 * xs_k_val_np * exp_O + xs_k_val_np ** 2
+        return E
+
 
     def cost_for_theta_gradient(self, current_thetas_np, psi_fixed_np, xs_input_np_sample, diff_method="adjoint"):
         E_theta = 0.0

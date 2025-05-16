@@ -11,6 +11,8 @@ import multiprocessing
 from functools import partial
 import torch
 
+import traceback
+
 # --- Проверка и заглушка QCMLModel (остается без изменений) ---
 try:
     from qcml_model import QCMLModel
@@ -38,27 +40,108 @@ except ImportError:
 
 
 # --- Вспомогательная функция find_ground_state_vqe (без изменений) ---
-def find_ground_state_vqe(model, thetas_input, xs_input, initial_phi,
-                          vqe_steps=100, vqe_lr=0.05, vqe_tol=1e-5, verbose=True):
-    """Находит основное состояние с помощью VQE."""
-    if verbose: print(f" Starting VQE optimization (steps={vqe_steps}, lr={vqe_lr}, tol={vqe_tol})...")
-    phi = np.copy(initial_phi)
-    opt_phi = qml.AdamOptimizer(stepsize=vqe_lr)
-    energy_prev = np.inf
+def find_ground_state_vqe_spsa(model, thetas_input_np, xs_input_np, initial_phi_np,
+                               vqe_steps=100,  # Максимальное количество итераций SPSA
+                               # Гиперпараметры SPSA, встроенные в функцию
+                               spsa_a=0.8,  # Начальный размер шага Adam (SPSA 'a')
+                               spsa_c=0.1,  # Размер возмущения (SPSA 'c')
+                               spsa_A=0.0,  # Стабилизирующий параметр (часто 0 или небольшой % от max_iter)
+                               # PennyLane SPSAOptimizer по умолчанию A=0
+                               spsa_alpha=0.602,  # Экспонента для уменьшения 'a'
+                               spsa_gamma=0.101,  # Экспонента для уменьшения 'c'
+                               vqe_tol=1e-5,  # Толерантность для проверки сходимости
+                               verbose=1,  # 0-нет, 1-основной, 2-детальный
+                               vqe_lr=None):  # vqe_lr не используется SPSA, но оставим для совместимости сигнатуры
+    """
+    Находит основное состояние (минимизирует model.energy_vqe_for_spsa) с помощью SPSA.
+    """
+    if verbose > 0:
+        print(f"  Starting VQE optimization with SPSA (max_steps={vqe_steps}, tol={vqe_tol})...")
+        print(f"  SPSA H-params: a={spsa_a}, c={spsa_c}, A={spsa_A}, alpha={spsa_alpha}, gamma={spsa_gamma}")
+
+    vqe_total_time_start = time.time()
+    iteration_times = []
+    cost_fn_eval_count = 0  # Счетчик вызовов основной функции стоимости
+
+    # SPSA работает с параметрами, которые могут быть pennylane.numpy или обычными numpy
+    # Важно, чтобы они не имели requires_grad=True с точки зрения PyTorch, если не смешиваем
+    phi = np.copy(initial_phi_np)  # Работаем с копией NumPy
+
+    # Оборачиваем функцию стоимости model.energy_vqe_for_spsa
+    cost_fn_for_spsa_raw = partial(model.energy_vqe_for_spsa,
+                                   thetas_input_np=thetas_input_np,
+                                   xs_input_np=xs_input_np)
+
+    # Обертка для подсчета вызовов
+    def cost_fn_spsa_counted(phi_params_np):
+        nonlocal cost_fn_eval_count
+        cost_fn_eval_count += 1
+        return cost_fn_for_spsa_raw(phi_params_np)
+
+    # Инициализация оптимизатора SPSA из PennyLane.
+    # Передаем гиперпараметры при инициализации.
+    opt_spsa = qml.SPSAOptimizer(maxiter=vqe_steps,
+                                 a=spsa_a,
+                                 c=spsa_c,
+                                 A=spsa_A,
+                                 alpha=spsa_alpha,
+                                 gamma=spsa_gamma)
+
+    energy_prev = cost_fn_spsa_counted(phi)  # Начальная стоимость (1-й вызов)
+    if verbose > 1: print(f"    SPSA iter -1: Initial Cost={energy_prev:.6f} (1 eval)")
+
     steps_done = 0
+    converged = False
+
     for i in range(vqe_steps):
-        steps_done=i+1
-        phi, energy = opt_phi.step_and_cost(lambda v: model.energy_vqe(v, thetas_input, xs_input), phi)
-        if verbose and (i % 10 == 0 or i == vqe_steps - 1): # Реже выводим VQE
-             print(f"  VQE iter {i:>3}: energy = {energy:.6f}")
-        if np.abs(energy - energy_prev) < vqe_tol:
-            if verbose: print(f" VQE converged at step {i+1}, energy = {energy:.6f}")
+        iter_time_start = time.time()
+        steps_done = i + 1
+
+        # opt_spsa.step требует функцию стоимости и текущие параметры.
+        # Внутри step будут сделаны 2 вызова cost_fn_spsa_counted.
+        phi_new = opt_spsa.step(cost_fn_spsa_counted, phi)
+
+        # Важно: SPSAOptimizer.step может вернуть тот же объект phi, измененный на месте,
+        # или новый. Для безопасности присваиваем.
+        phi = phi_new
+
+        # Для логирования и проверки сходимости, нам нужно значение энергии ПОСЛЕ шага.
+        # Если мы хотим строго 2 вызова на шаг SPSA, мы не должны вызывать cost_fn_spsa_counted здесь снова.
+        # Однако, для логирования и проверки сходимости это часто делают.
+        # Для чистоты SPSA, можно использовать последнее значение из внутренних вычислений,
+        # но qml.SPSAOptimizer не возвращает его из step().
+        # Поэтому делаем еще один вызов для логирования.
+        energy_current_for_log = cost_fn_spsa_counted(phi)  # +1 вызов для лога/сходимости
+
+        iter_time_end = time.time()
+        iteration_times.append(iter_time_end - iter_time_start)
+
+        if verbose > 1 and (i < 3 or i % (vqe_steps // 10 if vqe_steps > 10 else 1) == 0 or i == vqe_steps - 1):
+            print(f"    SPSA iter {i:>3}: Cost={energy_current_for_log:.6f}, iter_t={iteration_times[-1]:.4f}s "
+                  f"(cost_evals for this step: {opt_spsa.num_evals_per_step})")  # num_evals_per_step должно быть 2
+
+        if np.abs(
+                energy_current_for_log - energy_prev) < vqe_tol and i > opt_spsa.A / 2:  # Даем SPSA немного времени на стабилизацию
+            if verbose > 0:
+                print(f"  SPSA converged at step {steps_done}, Cost={energy_current_for_log:.6f}")
+            converged = True
             break
-        energy_prev = energy
-    # Получаем финальную энергию после последнего шага оптимизатора
-    final_energy = model.energy_vqe(phi, thetas_input, xs_input)
-    # if verbose: print(f" VQE finished after {steps_done} steps. Final energy = {final_energy:.6f}")
-    return phi, final_energy
+        energy_prev = energy_current_for_log
+
+    final_energy = energy_prev  # Последняя вычисленная энергия
+    if not converged and steps_done == vqe_steps and verbose > 0:
+        print(f"  SPSA finished after {steps_done} (max_steps). Final Cost={final_energy:.6f}")
+
+    vqe_total_time_end = time.time()
+    vqe_total_duration = vqe_total_time_end - vqe_total_time_start
+
+    if verbose > 0:
+        print(f"  SPSA VQE finished in {vqe_total_duration:.4f}s. Total cost evals: {cost_fn_eval_count}")
+        if steps_done > 0:
+            print(
+                f"    Avg iter time: {np.mean(iteration_times):.4f}s (включая доп. вызов cost для лога/сходимости)")
+
+    return phi, final_energy  # phi - это NumPy массив
 
 
 # --- *НОВОЕ*: Вспомогательная функция find_ground_state_vqe с PyTorch оптимизатором ---
@@ -179,7 +262,7 @@ def process_single_sample(xs_input_t, current_thetas, phi_guess, vqe_config):
 
     try:
         # --- VQE Фаза ---
-        phi_opt, _ = find_ground_state_vqe_pytorch(worker_model, current_thetas, xs_input_t, phi_guess, verbose=False, **vqe_config)
+        phi_opt, _ = find_ground_state_vqe_spsa(worker_model, current_thetas, xs_input_t, phi_guess, verbose=False, **vqe_config)
 
         # --- Theta Gradient Фаза ---
         psi_t = worker_model.get_state_vector(phi_opt)
@@ -225,7 +308,7 @@ def predict_single_sample(xs_input_t, thetas_input_trained, initial_phi_guess, v
     try:
         # --- VQE Фаза для предсказания ---
         # Используем initial_phi_guess для каждого сэмпла независимо
-        phi_pred, _ = find_ground_state_vqe_pytorch(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, verbose=False, **vqe_config)
+        phi_pred, _ = find_ground_state_vqe_spsa(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, verbose=False, **vqe_config)
 
         # --- Предсказание ---
         # Используем try-except, так как predict_target может не быть в заглушке
