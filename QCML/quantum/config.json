@@ -13,11 +13,22 @@
     "random_state": 42,
     "n_epochs": 7,
     "batch_size": 6,
-    "vqe_steps": 10,
-    "vqe_lr": 0.8,
-    "vqe_tol":1e-4,
     "theta_lr": 0.1,
-    "num_workers": 6
+    "num_workers": 6,
+
+    "vqe_optimizer": "SPSA",
+    "vqe_optimizer_params": {
+        "Adam": {"lr": 0.8},
+        "SPSA": {
+
+        },
+        "Nelder-Mead": {
+        },
+        "COBYLA": {
+        }
+    },
+    "vqe_steps": 5,
+    "vqe_tol": 1e-3
   },
   "output": {
     "results_prefix": "qcml_final_run"

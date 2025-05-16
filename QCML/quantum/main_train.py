@@ -37,29 +37,90 @@ except ImportError:
 
 
 # --- Вспомогательная функция find_ground_state_vqe (без изменений) ---
+# --- Вспомогательная функция find_ground_state_vqe (ИЗМЕНЕНО: выбор оптимизатора) ---
 def find_ground_state_vqe(model, thetas_input, xs_input, initial_phi,
-                          vqe_steps=100, vqe_lr=0.05, vqe_tol=1e-5, verbose=True):
-    """Находит основное состояние с помощью VQE."""
-    if verbose: print(f" Starting VQE optimization (steps={vqe_steps}, lr={vqe_lr}, tol={vqe_tol})...")
+                          vqe_config, verbose=True): # vqe_config вместо отдельных параметров
+    """
+    Находит основное состояние с помощью VQE, используя оптимизатор,
+    заданный в vqe_config.
+    """
+    optimizer_name = vqe_config.get('optimizer_name', 'Adam')
+    optimizer_params = vqe_config.get('optimizer_params', {})
+    max_steps = vqe_config.get('max_steps', 100)
+    tol = vqe_config.get('tol', 1e-5)
+
+    if verbose:
+        print(f" Starting VQE optimization with '{optimizer_name}' (max_steps={max_steps}, tol={tol}, params={optimizer_params})...")
+
     phi = np.copy(initial_phi)
-    opt_phi = qml.AdamOptimizer(stepsize=vqe_lr)
+    opt = None
+
+    # --- Инициализация оптимизатора ---
+    if optimizer_name == 'Adam':
+        lr = optimizer_params.get('lr', 0.05) # Получаем lr из параметров
+        opt = qml.AdamOptimizer(stepsize=lr)
+    elif optimizer_name == 'SPSA':
+        # Используем параметры из vqe_config или дефолты SPSAOptimizer
+        # Дефолты PennyLane для SPSA: a=0.2, c=0.06, A=max_steps*0.1, alpha=0.602, gamma=0.101
+        # если A=None, то он не используется для уменьшения 'a'
+
+        spsa_params = {k: v for k, v in optimizer_params.items() if v is not None} # Убираем None значения
+        spsa_params['maxiter'] = max_steps
+        opt = qml.SPSAOptimizer(**spsa_params) # Передаем только указанные параметры
+        if verbose: print(f"   SPSAOptimizer initialized with effective params: {spsa_params} (remaining use PennyLane defaults)")
+    elif optimizer_name in ['Nelder-Mead', 'COBYLA', 'Powell']: # Добавьте другие SciPy методы по необходимости
+        # Для GradientFreeOptimizer, optimizer_params - это 'options' для scipy.optimize.minimize
+        scipy_options = optimizer_params if optimizer_params else {} # Используем {} если пусто, для дефолтов
+        opt = qml.GradientFreeOptimizer(method=optimizer_name, options=scipy_options)
+        if verbose: print(f"   GradientFreeOptimizer ({optimizer_name}) initialized with options: {scipy_options}")
+    else:
+        raise ValueError(f"Unsupported VQE optimizer: {optimizer_name}")
+
+    cost_fn = lambda p: model.energy_vqe(p, thetas_input, xs_input)
     energy_prev = np.inf
     steps_done = 0
-    for i in range(vqe_steps):
-        steps_done=i+1
-        phi, energy = opt_phi.step_and_cost(lambda v: model.energy_vqe(v, thetas_input, xs_input), phi)
-        if verbose and (i % 10 == 0 or i == vqe_steps - 1): # Реже выводим VQE
-             print(f"  VQE iter {i:>3}: energy = {energy:.6f}")
-        if np.abs(energy - energy_prev) < vqe_tol:
-            if verbose: print(f" VQE converged at step {i+1}, energy = {energy:.6f}")
+
+    for i in range(max_steps):
+        steps_done = i + 1
+        try:
+            if optimizer_name == 'Adam': # AdamOptimizer и SPSAOptimizer имеют step_and_cost
+                 phi, energy = opt.step_and_cost(cost_fn, phi)
+            elif optimizer_name == 'SPSA':
+                 phi, energy = opt.step_and_cost(cost_fn, phi) # SPSA также имеет step_and_cost
+            elif optimizer_name in ['Nelder-Mead', 'COBYLA', 'Powell']:
+                # qml.GradientFreeOptimizer также имеет step_and_cost
+                phi, energy = opt.step_and_cost(cost_fn, phi)
+            else: # На случай если какой-то оптимизатор потребует другого вызова
+                phi = opt.step(cost_fn, phi)
+                energy = cost_fn(phi)
+
+        except Exception as e:
+            if verbose:
+                print(f"\n  Error during VQE optimizer step {i+1} with {optimizer_name}: {e}")
+                print(f"  Current phi: {phi}") # Может помочь в отладке
+            # Можно вернуть текущее состояние или поднять ошибку
+            # Возвращаем текущее phi и бесконечную энергию как признак проблемы
+            return phi, np.inf
+
+        if verbose and (i % 10 == 0 or i == max_steps - 1 or optimizer_name != 'Adam'): # Для не-Adam выводим чаще
+             print(f"  VQE iter {i+1:>3}/{max_steps} ({optimizer_name}): energy = {energy:.6f}")
+
+        if np.abs(energy - energy_prev) < tol:
+            if verbose: print(f" VQE converged with {optimizer_name} at step {i+1}, energy = {energy:.6f}")
             break
         energy_prev = energy
-    # Получаем финальную энергию после последнего шага оптимизатора
-    final_energy = model.energy_vqe(phi, thetas_input, xs_input)
-    # if verbose: print(f" VQE finished after {steps_done} steps. Final energy = {final_energy:.6f}")
+
+    # Получаем финальную энергию после последнего шага оптимизатора (или если цикл завершился по max_steps)
+    final_energy = cost_fn(phi)
+    if verbose and steps_done == max_steps and np.abs(final_energy - energy_prev) >= tol : # Если не сошлось по tol
+        print(f" VQE finished by max_steps ({steps_done}) with {optimizer_name}. Final energy = {final_energy:.6f}")
+    elif verbose and steps_done < max_steps : # Если сошлось по tol раньше
+        pass # Сообщение уже было выведено
+    else: # Если закончились шаги и последнее изменение было в пределах tol
+        if verbose: print(f" VQE finished by max_steps ({steps_done}) with {optimizer_name}. Final energy = {final_energy:.6f}")
+
+
     return phi, final_energy
-
-
 # --- Глобальная переменная для хранения модели в воркере (без изменений) ---
 worker_model = None
 
@@ -102,8 +163,7 @@ def process_single_sample(xs_input_t, current_thetas, phi_guess, vqe_config):
 
     try:
         # --- VQE Фаза ---
-        phi_opt, _ = find_ground_state_vqe(worker_model, current_thetas, xs_input_t, phi_guess, verbose=False, **vqe_config)
-
+        phi_opt, _ = find_ground_state_vqe(worker_model, current_thetas, xs_input_t, phi_guess, vqe_config=vqe_config, verbose=False)
         # --- Theta Gradient Фаза ---
         psi_t = worker_model.get_state_vector(phi_opt)
 
@@ -148,8 +208,7 @@ def predict_single_sample(xs_input_t, thetas_input_trained, initial_phi_guess, v
     try:
         # --- VQE Фаза для предсказания ---
         # Используем initial_phi_guess для каждого сэмпла независимо
-        phi_pred, _ = find_ground_state_vqe(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, verbose=False, **vqe_config)
-
+        phi_pred, _ =phi_pred, _ = find_ground_state_vqe(worker_model, thetas_input_trained, xs_input_t, initial_phi_guess, vqe_config=vqe_config, verbose=False)
         # --- Предсказание ---
         # Используем try-except, так как predict_target может не быть в заглушке
         try:
@@ -219,8 +278,36 @@ def train_and_evaluate(config_path):
         with open(config_path, 'r') as f: config = json.load(f); print("Configuration loaded.")
         data_path = config['data']['data_path']; target_col = config['data']['target_col']; test_size = config['training']['test_size']; random_state = config['training'].get('random_state', 42); np.random.seed(random_state)
         n_qubits = config['model']['n_qubits']; n_layers_vqe = config['model']['n_layers_vqe']; l_u_layers = config['model']['l_u_layers']
-        n_epochs = config['training']['n_epochs']; batch_size = config['training']['batch_size']; vqe_steps = config['training']['vqe_steps']; vqe_lr = config['training']['vqe_lr']; theta_lr = config['training']['theta_lr']; vqe_tol = config['training'].get('vqe_tol', 1e-5)
+        n_epochs = config['training']['n_epochs']; batch_size = config['training']['batch_size'];
+        theta_lr = config['training']['theta_lr']; vqe_tol = config['training'].get('vqe_tol', 1e-5)
         num_workers = config['training'].get('num_workers', os.cpu_count()); results_prefix = config['output']['results_prefix']
+
+        # --- Новая конфигурация для VQE оптимизатора ---
+        vqe_optimizer_name = config['training'].get('vqe_optimizer', 'Adam')  # По умолчанию Adam, если не указано
+        vqe_optimizer_params_all = config['training'].get('vqe_optimizer_params', {})
+        vqe_optimizer_specific_params = vqe_optimizer_params_all.get(vqe_optimizer_name, {})
+        # Если для Adam не указан lr в новой структуре, берем старый vqe_lr для обратной совместимости, если он есть
+        if vqe_optimizer_name == 'Adam' and 'lr' not in vqe_optimizer_specific_params and 'vqe_lr' in config[
+            'training']:
+            print(f"Warning: Using legacy 'vqe_lr' for Adam. Please define 'lr' under 'vqe_optimizer_params.Adam'.")
+            vqe_optimizer_specific_params['lr'] = config['training']['vqe_lr']
+        elif vqe_optimizer_name == 'Adam' and 'lr' not in vqe_optimizer_specific_params:
+            vqe_optimizer_specific_params['lr'] = 0.05  # Дефолт, если совсем ничего нет
+        max_vqe_steps = config['training']['vqe_steps']  # Общее максимальное количество шагов
+        vqe_convergence_tol = config['training'].get('vqe_tol', 1e-5)  # Общая толерантность
+
+        # Формируем vqe_config, который будет передаваться дальше
+        vqe_config = {
+            'optimizer_name': vqe_optimizer_name,
+            'optimizer_params': vqe_optimizer_specific_params,
+            'max_steps': max_vqe_steps,
+            'tol': vqe_convergence_tol
+        }
+        print(f"Using VQE config: {vqe_config}")
+        # --- Конец новой конфигурации для VQE ---
+
+        print(f"Using num_workers for multiprocessing: {num_workers}")
+
         print(f"Using num_workers for multiprocessing: {num_workers}")
     except Exception as e: print(f"Error loading config: {e}"); return
 
@@ -315,8 +402,6 @@ def train_and_evaluate(config_path):
     # --- 3. Цикл Обучения с Батчингом и MULTIPROCESSING ---
     print("\n--- Starting QCML Training (USING MULTIPROCESSING) ---")
     start_time_total = time.time();
-    vqe_config = {'vqe_steps': vqe_steps, 'vqe_lr': vqe_lr, 'vqe_tol': vqe_tol}
-    print(f"Using VQE config: {vqe_config}")
     train_indices_original_order = np.arange(n_train)
     mp_context = multiprocessing.get_context('spawn') # 'spawn' рекомендуется для кроссплатформенности
 
