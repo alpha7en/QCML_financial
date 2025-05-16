@@ -8,22 +8,9 @@ from itertools import product  # Для функции разложения
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # +++ Функция разложения диагонального оператора на сумму произведений I и Z +++
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-def get_pauli_decomposition_for_diag_operator(diag_elements_np, num_qubits):
-    """
-    Раскладывает диагональный оператор, заданный его диагональными элементами,
-    на линейную комбинацию произведений операторов Паули Z и Identity.
-
-    Args:
-        diag_elements_np (numpy.ndarray): 1D массив диагональных элементов (длина 2**num_qubits).
-        num_qubits (int): Количество кубит.
-
-    Returns:
-        tuple: (coeffs, ops) для qml.Hamiltonian
-               coeffs (list[float]): Список коэффициентов.
-               ops (list[qml.Observable]): Список операторов (произведения I и Z).
-    """
+def get_pauli_decomposition_for_diag_operator(diag_elements_np, num_qubits, dev_for_matrix=None, debug_print=False):
     if not isinstance(diag_elements_np, vanilla_np.ndarray):
-        diag_elements_np = vanilla_np.array(diag_elements_np)
+        diag_elements_np = vanilla_np.array(diag_elements_np, dtype=float)
 
     expected_len = 2 ** num_qubits
     if len(diag_elements_np) != expected_len:
@@ -32,92 +19,77 @@ def get_pauli_decomposition_for_diag_operator(diag_elements_np, num_qubits):
 
     coeffs = []
     pauli_observables = []
+    all_wires = list(range(num_qubits))
 
-    # Итерируем по всем 2**num_qubits возможным конфигурациям Паули-строк (I или Z на каждом кубите)
+    # Если dev_for_matrix не передан, создадим временный default.qubit для qml.matrix,
+    # так как qml.matrix может требовать активное устройство.
+    # Однако, qml.matrix(Operator) обычно работает и без явного устройства, если оно просто
+    # строит математическую матрицу.
+    # Проверим, нужен ли он. Если да, то default.qubit достаточно.
+
+    if debug_print: print(f"  Target diagonal D: {diag_elements_np}")
+
     for pauli_config_bits in product([0, 1], repeat=num_qubits):
-        # pauli_config_bits: кортеж из 0 и 1, где 0 -> I, 1 -> Z
-
-        current_pauli_ops_list = []
-        is_all_identity = True
+        current_term_ops_list_for_hamiltonian = []
+        pauli_string_repr_list_for_debug = []
         for qubit_idx in range(num_qubits):
-            if pauli_config_bits[qubit_idx] == 0:  # Identity
-                current_pauli_ops_list.append(qml.Identity(qubit_idx))
-            else:  # PauliZ
-                current_pauli_ops_list.append(qml.PauliZ(qubit_idx))
-                is_all_identity = False
+            if pauli_config_bits[qubit_idx] == 0:
+                current_term_ops_list_for_hamiltonian.append(qml.Identity(qubit_idx))
+                pauli_string_repr_list_for_debug.append(f"I({qubit_idx})")
+            else:
+                current_term_ops_list_for_hamiltonian.append(qml.PauliZ(qubit_idx))
+                pauli_string_repr_list_for_debug.append(f"Z({qubit_idx})")
 
-        # Создаем оператор произведения (например, I(0) @ Z(1) @ I(2))
-        if not current_pauli_ops_list:  # Случай 0 кубит
-            if num_qubits == 0 and expected_len == 1:  # Скаляр
-                coeffs.append(diag_elements_np[0])
-                # Для qml.Hamiltonian нужен наблюдаемый. Можно использовать Identity(0), если N=1
-                # или специальный qml.Identity() без проводов, но это не наш случай.
-                # Этот блок не должен выполняться для num_qubits > 0.
-                # В PennyLane для скаляра лучше просто добавить его к стоимости.
-                # Мы предполагаем num_qubits >= 1
-                if num_qubits == 0:  # Для случая 0 кубит, если бы он был главным
-                    # coeffs.append(diag_elements_np[0])
-                    # pauli_observables.append(qml.Identity(0)) # Заглушка, некорректно для N=0
-                    # Для N=0, это просто скаляр, не гамильтониан в обычном смысле.
-                    # Пропускаем, так как наши num_qubits > 0
-                    pass
-                continue
+        if num_qubits == 0: continue
 
-        # Формируем объект Observable для произведения Паули
-        # Если все Identity, то это глобальный Identity оператор
-        if is_all_identity and num_qubits > 0:
-            # Для N кубит, это I(0)@I(1)@...@I(N-1).
-            # qml.Hamiltonian может принять qml.Identity(0) если другие члены есть,
-            # или можно просто использовать qml.Identity(0) как один из членов, если он единственный.
-            # PennyLane "умно" создаст оператор Identity на всех нужных кубитах.
-            final_pauli_term_op = qml.Identity(0)  # PennyLane распространит это на все провода гамильтониана
-            # или можно взять Identity на первом проводе, если так яснее.
-            # Для ясности можно собрать полный Identity:
-            # final_pauli_term_op = current_pauli_ops_list[0]
-            # for i in range(1, len(current_pauli_ops_list)):
-            #     final_pauli_term_op = final_pauli_term_op @ current_pauli_ops_list[i]
+        pauli_term_op_for_hamiltonian = current_term_ops_list_for_hamiltonian[0]
+        if num_qubits > 1:
+            for i in range(1, num_qubits):
+                pauli_term_op_for_hamiltonian @= current_term_ops_list_for_hamiltonian[i]
 
-        elif num_qubits > 0:
-            # Убираем Identity из списка, если есть другие операторы Паули,
-            # так как qml.PauliZ(0) @ qml.Identity(1) === qml.PauliZ(0)
-            # (если в Hamiltonian передавать список отдельных Паули на кубитах)
-            # Но мы строим тензорное произведение, так что все Identity нужны.
-            final_pauli_term_op = current_pauli_ops_list[0]
-            for i in range(1, len(current_pauli_ops_list)):
-                final_pauli_term_op = final_pauli_term_op @ current_pauli_ops_list[i]
-        else:  # num_qubits == 0, уже обработано выше (пропущено)
-            continue
+        current_pauli_str_debug = " @ ".join(pauli_string_repr_list_for_debug)
+        if debug_print: print(f"    Testing Pauli term P: {current_pauli_str_debug} (config: {pauli_config_bits})")
 
-        # Вычисляем диагональные элементы этого оператора произведения Паули P_s
-        diag_Ps = vanilla_np.ones(expected_len)
-        for state_idx in range(expected_len):  # Итерируем по базисным состояниям |0...0> до |1...1>
-            eigenvalue = 1.0
-            for qubit_j in range(num_qubits):
-                if pauli_config_bits[qubit_j] == 1:  # Если это PauliZ на j-м кубите
-                    s_j = (state_idx >> qubit_j) & 1  # j-й бит state_idx (справа налево)
-                    if s_j == 1:  # если кубит j в состоянии |1>
-                        eigenvalue *= -1.0
-            diag_Ps[state_idx] = eigenvalue
+        # --- ИСПОЛЬЗУЕМ qml.matrix для получения diag_P ---
+        try:
+            # wire_order здесь должен соответствовать тому, как упорядочены кубиты в pauli_config_bits
+            # и как state_idx интерпретируется (0-й бит state_idx -> wires[0])
+            matrix_P_s_complex = qml.matrix(pauli_term_op_for_hamiltonian, wire_order=all_wires)
+            diag_P = vanilla_np.diag(matrix_P_s_complex.real)
+        except Exception as e_mat_p:
+            print(f"      ERROR: Could not compute matrix for {pauli_term_op_for_hamiltonian}: {e_mat_p}")
+            # Fallback на ручное вычисление, если qml.matrix не сработал (но он должен)
+            # Однако, если qml.matrix не работает, то и H_reconstructed.matrix тоже не сработает.
+            # Это указывает на более глубокую проблему, если qml.matrix падает.
+            # Для теста пока оставим ручное, если qml.matrix падает.
+            diag_P = vanilla_np.ones(expected_len, dtype=float)  # Заглушка в случае ошибки
+            for state_idx in range(expected_len):
+                eigenvalue_P_for_state = 1.0
+                for wire_idx in range(num_qubits):
+                    if pauli_config_bits[wire_idx] == 1:
+                        state_of_wire_idx = (state_idx >> wire_idx) & 1
+                        if state_of_wire_idx == 1:
+                            eigenvalue_P_for_state *= -1.0
+                diag_P[state_idx] = eigenvalue_P_for_state
+            if debug_print: print(f"      Used fallback manual diag_P calculation.")
 
-        # Коэффициент c_s = (1/2^N) * Trace(D @ P_s) = (1/2^N) * sum(diag(D) * diag(P_s))
-        coeff = (1.0 / (expected_len)) * vanilla_np.sum(diag_elements_np * diag_Ps)
+        if debug_print: print(f"      diag_P (from qml.matrix or fallback): {diag_P}")
 
-        if abs(coeff) > 1e-10:
+        coeff = (1.0 / expected_len) * vanilla_np.sum(diag_elements_np * diag_P)
+        if debug_print: print(
+            f"      Calculated coeff = (1/{expected_len}) * sum({diag_elements_np} * {diag_P}) = {coeff:.4f}")
+
+        if abs(coeff) > 1e-9:
+            if debug_print: print(f"      ADDING TERM: coeff={coeff:.4f}, op={pauli_term_op_for_hamiltonian}")
             coeffs.append(coeff)
-            pauli_observables.append(final_pauli_term_op)
+            pauli_observables.append(pauli_term_op_for_hamiltonian)
 
-    # Если список коэффициентов пуст (например, для нулевого оператора),
-    # qml.Hamiltonian([0.0], [qml.Identity(0)]) является стандартной практикой.
-    if not coeffs:
-        # print("Warning: Pauli decomposition resulted in all zero coefficients. Returning 0.0 * I.")
+    if not coeffs and num_qubits > 0:
         coeffs.append(0.0)
-        if num_qubits > 0:
-            pauli_observables.append(qml.Identity(0))  # Для любого провода
-        else:  # Скалярный случай (0 кубит), вернем Identity на "несуществующем" проводе 0 для консистентности
-            # Но это не должно вызываться с num_qubits=0, если есть проверка в начале.
-            # Если diag_elements_np = [c] для N=0, то coeffs=[c], ops=[qml.Identity(0)] - нужно обработать.
-            # Эта функция не предназначена для N=0.
-            pass  # Не должно сюда попадать для N > 0
+        id_op = qml.Identity(all_wires[0]) if all_wires else qml.Identity(0)
+        if num_qubits > 1:
+            for i in range(1, len(all_wires)): id_op @= qml.Identity(all_wires[i])
+        pauli_observables.append(id_op)
 
     return coeffs, pauli_observables
 
