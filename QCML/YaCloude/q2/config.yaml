@@ -1,0 +1,44 @@
+name: qcml-moex-training-job
+desc: Training QCML model on MOEX data
+
+
+cmd: python3 main_train2.py
+    --config ${CONFIG_INPUT}
+    --dataset ${DATASET_INPUT}
+    --model-output ${MODEL_OUTPUT}
+    --plot-output ${PLOT_OUTPUT}
+env:
+
+  docker:
+    image: pennylaneai/pennylane:latest-lightning-gpu
+  python:
+    type: manual
+    version: 3.12
+    pip:
+       index-url: https://pypi.org/simple
+       extra-index-urls:
+         - https://pypi.ngc.nvidia.com
+       trusted-hosts:
+         - nvidia.com
+  requirements-file: requirements.txt
+  local-paths:
+    -qcml_model2.py
+
+inputs:
+  - config2.json: CONFIG_INPUT
+
+  - 0moex_qcml_final_dataset_with_embeddings2.parquet: DATASET_INPUT
+
+
+
+
+
+outputs:
+
+  - trained_qcml_model.npz: MODEL_OUTPUT
+
+  - qcml_training_plot.png: PLOT_OUTPUT
+
+
+cloud-instance-types:
+  - g1.1
