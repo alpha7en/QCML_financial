@@ -3,6 +3,8 @@
 
 from __future__ import annotations
 from yandex_cloud_ml_sdk import YCloudML
+import os
+from dotenv import load_dotenv
 
 doc_texts = [
     """Александр Сергеевич Пушкин (26 мая [6 июня] 1799, Москва — 29 января [10 февраля] 1837, Санкт-Петербург)
@@ -19,10 +21,13 @@ def main():
     import numpy as np
     from scipy.spatial.distance import cdist
 
-    sdk = YCloudML(
-        folder_id="b1gu0dd26bpgkokh9fsk",
-        auth="AQVNzgJ3h6AJ57br7A1PMYnN7NFQtpfijLSmTyTi",
-    )
+    load_dotenv()
+    folder_id = os.getenv("YANDEX_FOLDER_ID")
+    auth_token = os.getenv("YANDEX_AUTH_TOKEN")
+    if not folder_id or not auth_token:
+        raise SystemExit("YANDEX_FOLDER_ID или YANDEX_AUTH_TOKEN не найдены. Укажите их в переменных окружения или .env.")
+
+    sdk = YCloudML(folder_id=folder_id, auth=auth_token)
 
     doc_model = sdk.models.text_embeddings("doc")
     doc_embeddings = [doc_model.run(text) for text in doc_texts]

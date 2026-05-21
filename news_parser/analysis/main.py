@@ -4,13 +4,21 @@ from scipy.spatial.distance import cosine
 from scipy.stats import entropy
 import time
 import numpy as np
+import os
+from dotenv import load_dotenv
 
 
 RATE_LIMIT_DELAY = 0.2  # 200 мс
-# Инициализация клиента (замените на ваши параметры)
+load_dotenv()
+folder_id = os.getenv("YANDEX_FOLDER_ID")
+auth_token = os.getenv("YANDEX_AUTH_TOKEN")
+if not folder_id or not auth_token:
+    raise SystemExit("YANDEX_FOLDER_ID или YANDEX_AUTH_TOKEN не найдены. Укажите их в переменных окружения или .env.")
+
+# Инициализация клиента
 sdk = YCloudML(
-    folder_id="b1gu0dd26bpgkokh9fsk",
-    auth="AQVNyz-waLh_zQFPyVCl-LhOUQdwCMNc2bJtfCud"
+    folder_id=folder_id,
+    auth=auth_token
 )
 
 
