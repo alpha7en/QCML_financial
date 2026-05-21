@@ -2,24 +2,13 @@ from google import genai
 import time
 import os
 import json # Для возможного сохранения/загрузки кэша
+from dotenv import load_dotenv
 
 # --- КОНФИГУРАЦИЯ ---
-# ВАЖНО: Замените на ваш реальный ключ API!
-# Лучше хранить ключ в секретах Colab или переменных окружения.
-try:
-    from google.colab import userdata
-    GEMINI_API_KEY = "AIzaSyAujzD44yEeb3wCgqM1RVGHmwI5DCWWa8A"
-    if not GEMINI_API_KEY:
-        print("Ключ API Gemini не найден в секретах Colab.")
-        GEMINI_API_KEY = input("Введите ваш API ключ Gemini: ") # Только для демонстрации
-except ImportError:
-     GEMINI_API_KEY = "AIzaSyAujzD44yEeb3wCgqM1RVGHmwI5DCWWa8A"
-     if not GEMINI_API_KEY:
-         print("Ключ API Gemini не найден в переменных окружения.")
-         GEMINI_API_KEY = input("Введите ваш API ключ Gemini: ") # Только для демонстрации
-
+load_dotenv()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
-    raise ValueError("Необходимо предоставить API ключ Gemini!")
+    raise ValueError("GEMINI_API_KEY не найден. Укажите ключ в переменных окружения или .env.")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 

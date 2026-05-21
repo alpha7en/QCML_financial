@@ -7,10 +7,14 @@ import time
 import os
 import json
 import pickle
+from dotenv import load_dotenv
 
 # --- КОНФИГУРАЦИЯ ---
-YC_FOLDER_ID = "b1gu0dd26bpgkokh9fsk"  # <<<--- ЗАМЕНИТЕ НА ID ВАШЕГО КАТАЛОГА
-YC_AUTH_TOKEN = "AQVNzgJ3h6AJ57br7A1PMYnN7NFQtpfijLSmTyTi" # <<<--- ЗАМЕНИТЕ НА ВАШ IAM-ТОКЕН или API-ключ
+load_dotenv()
+YC_FOLDER_ID = os.getenv("YANDEX_FOLDER_ID")
+YC_AUTH_TOKEN = os.getenv("YANDEX_AUTH_TOKEN")
+if not YC_FOLDER_ID or not YC_AUTH_TOKEN:
+    raise SystemExit("YANDEX_FOLDER_ID или YANDEX_AUTH_TOKEN не найдены. Укажите их в переменных окружения или .env.")
 
 
 # >>> Используем КОРОТКИЕ имена моделей из примера <<<

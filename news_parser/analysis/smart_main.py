@@ -5,6 +5,7 @@ from scipy.stats import entropy
 import time
 import numpy as np
 import os # Добавлено для проверки существования файла
+from dotenv import load_dotenv
 
 RATE_LIMIT_DELAY = 0.1  # 200 мс
 OUTPUT_FILENAME = "raw_features.csv"
@@ -13,11 +14,13 @@ SAVE_INTERVAL = 10 # Сохранять каждые N дней
 
 # --- Инициализация клиента Yandex Cloud ---
 try:
-    # Замените на ваши параметры или используйте переменные окружения/метаданные ВМ
-    sdk = YCloudML(
-        folder_id="b1gu0dd26bpgkokh9fsk",
-        auth="AQVNyz-waLh_zQFPyVCl-LhOUQdwCMNc2bJtfCud"
-    )
+    load_dotenv()
+    folder_id = os.getenv("YANDEX_FOLDER_ID")
+    auth_token = os.getenv("YANDEX_AUTH_TOKEN")
+    if not folder_id or not auth_token:
+        raise ValueError("YANDEX_FOLDER_ID или YANDEX_AUTH_TOKEN не найдены.")
+
+    sdk = YCloudML(folder_id=folder_id, auth=auth_token)
     classifier = (
         sdk.models.text_classifiers("yandexgpt-lite")
     )
